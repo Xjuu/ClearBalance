@@ -821,7 +821,7 @@
       // Check existing session
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
-        window.location.href = 'to.html';
+        window.location.href = 'clearbalance-app.html';
       }
     }
 
@@ -858,12 +858,12 @@
             if (signUpError) throw signUpError;
             
             showSuccess('Account created! Redirecting...');
-            setTimeout(() => window.location.href = 'to.html', 1500);
+            setTimeout(() => window.location.href = 'clearbalance-app.html', 1500);
           } else if (error) {
             throw error;
           } else {
             showSuccess('Welcome back! Redirecting...');
-            setTimeout(() => window.location.href = 'to.html', 1000);
+            setTimeout(() => window.location.href = 'clearbalance-app.html', 1000);
           }
         } catch (error) {
           showError(error.message);
@@ -874,7 +874,7 @@
         try {
           await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: window.location.origin + '/to.html' }
+            options: { redirectTo: window.location.origin + '/clearbalance-app.html' }
           });
         } catch (error) {
           showError('Google sign-in needs configuration. Use email/password.');
@@ -885,7 +885,7 @@
         try {
           await supabaseClient.auth.signInWithOAuth({
             provider: 'github',
-            options: { redirectTo: window.location.origin + '/to.html' }
+            options: { redirectTo: window.location.origin + '/clearbalance-app.html' }
           });
         } catch (error) {
           showError('GitHub sign-in needs configuration. Use email/password.');
