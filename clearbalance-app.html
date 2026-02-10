@@ -1897,6 +1897,162 @@
             <div class="progress-header">
               <strong>${budget.category}</strong>
               <span style="color: ${isOver ? 'var(--danger)' : 'var(--success)'}">
+                ${formatCurrency(spent, budget.currency)} / ${formatCurrency(budget.limit_amount, budget.currency)}
+              </span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill ${isOver ? 'over' : ''}" style="width: ${percent}%"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+              <span style="font-size: 0.875rem; color: var(--steel-blue)">${percent.toFixed(1)}% used</span>
+              <button class="btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;" onclick="deleteBudget(${budget.id})">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function deleteBudget(id) {
+      if (!confirm('Delete this budget?')) return;
+      await supabaseClient.from('budget_goals').delete().eq('id', id);
+      await loadBudgets();
+    }
+
+    // Dashboard Rendering
+    function renderDashboard() {
+      const now = new Date();
+      const thisMonth = transactions.filter(t => {
+        const d = new Date(t.date);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      });
+
+      const income = thisMonth.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+      const expenses = thisMonth.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+      const netWorth = accounts.reduce((sum, a) => sum + a.balance, 0) - debts.reduce((sum, d) => sum + d.current_balance, 0);
+      const savingsRate = income > 0 ? ((income - expenses) / income * 100) : 0;
+
+      document.getElementById('totalIncome').textContent = formatCurrency(income, userCurrency);
+      document.getElementById('totalExpenses').textContent = formatCurrency(expenses, userCurrency);
+      document.getElementById('netWorth').textContent = formatCurrency(netWorth, userCurrency);
+      document.getElementById('savingsRate').textContent = `${savingsRate.toFixed(1)}%`;
+
+      renderCharts();
+    }
+
+    function renderCharts() {
+      const ctx1 = document.getElementById('incomeExpenseChart');
+      if (charts.incomeExpense) charts.incomeExpense.destroy();
+      
+      const months = getLast6Months();
+      const monthlyIncome = months.map(m => getMonthlyTotal(m, 'income'));
+      const monthlyExpenses = months.map(m => getMonthlyTotal(m, 'expense'));
+
+      charts.incomeExpense = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: months.map(m => m.toLocaleDateString('en-US', { month: 'short' })),
+          datasets: [{
+            label: 'Income',
+            data: monthlyIncome,
+            backgroundColor: 'rgba(127, 184, 167, 0.8)'
+          }, {
+            label: 'Expenses',
+            data: monthlyExpenses,
+            backgroundColor: 'rgba(231, 111, 81, 0.8)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } }
+        }
+      });
+
+      const ctx2 = document.getElementById('categoryChart');
+      if (charts.category) charts.category.destroy();
+      
+      const categoryData = {};
+      transactions.filter(t => t.type === 'expense').forEach(t => {
+        categoryData[t.category] = (categoryData[t.category] || 0) + t.amount;
+      });
+
+      if (Object.keys(categoryData).length > 0) {
+        charts.category = new Chart(ctx2, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(categoryData),
+            datasets: [{
+              data: Object.values(categoryData),
+              backgroundColor: ['#4a7c9e', '#7fb8a7', '#d4a373', '#e8956f', '#1a3a52', '#e76f51']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'right' } }
+          }
+        });
+      }
+
+      const ctx3 = document.getElementById('netWorthChart');
+      if (charts.netWorth) charts.netWorth.destroy();
+      
+      charts.netWorth = new Chart(ctx3, {
+        type: 'line',
+        data: {
+          labels: months.map(m => m.toLocaleDateString('en-US', { month: 'short' })),
+          datasets: [{
+            label: 'Net Worth',
+            data: months.map(m => getMonthlyTotal(m, 'income') - getMonthlyTotal(m, 'expense')),
+            borderColor: '#7fb8a7',
+            backgroundColor: 'rgba(127, 184, 167, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function getLast6Months() {
+      const months = [];
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date();
+        d.setMonth(d.getMonth() - i);
+        months.push(d);
+      }
+      return months;
+    }
+
+    function getMonthlyTotal(date, type) {
+      return transactions
+        .filter(t => {
+          const d = new Date(t.date);
+          return t.type === type && 
+                 d.getMonth() === date.getMonth() && 
+                 d.getFullYear() === date.getFullYear();
+        })
+        .reduce((sum, t) => sum + t.amount, 0);
+    }
+
+    // Initialize app
+    init();
+  </script>
+</body>
+</html> {
+        const spent = spending[budget.category] || 0;
+        const percent = Math.min((spent / budget.limit_amount * 100), 100);
+        const isOver = spent > budget.limit_amount;
+
+        return `
+          <div class="progress-container">
+            <div class="progress-header">
+              <strong>${budget.category}</strong>
+              <span style="color: ${isOver ? 'var(--danger)' : 'var(--success)'}">
                 ${currencies[budget.currency]?.symbol}${spent.toFixed(2)} / ${currencies[budget.currency]?.symbol}${budget.limit_amount.toFixed(2)}
               </span>
             </div>
