@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClearBalance - Professional Financial Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #333446;
+      --secondary: #7F8CAA;
+      --accent: #B8CFCE;
+      --background: #EAEFEF;
+      --white: #ffffff;
+      --text: #2d2d2d;
+      --success: #4ade80;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --border: rgba(127, 140, 170, 0.2);
+      --shadow: 0 4px 6px rgba(51, 52, 70, 0.1);
+      --shadow-lg: 0 10px 25px rgba(51, 52, 70, 0.15);
+    }
+
+    [data-theme="dark"] {
+      --primary: #4a4b5e;
+      --secondary: #8f9bb3;
+      --accent: #9cb4b3;
+      --background: #1a1b26;
+      --white: #24253a;
+      --text: #e4e4e7;
+      --border: rgba(143, 155, 179, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .hidden { display: none !important; }
+
+    .cookie-banner {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--white);
+      padding: 1.5rem 2rem;
+      border-radius: 1rem;
+      box-shadow: var(--shadow-lg);
+      max-width: 400px;
+      z-index: 10000;
+      border: 2px solid var(--accent);
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .cookie-content h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .cookie-content p {
+      font-size: 0.9rem;
+      color: var(--secondary);
+      margin-bottom: 1rem;
+    }
+
+    .cookie-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--secondary);
+      border: 2px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .landing-nav {
+      padding: 1.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .logo {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--background);
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+    }
+
+    .lang-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: none;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--secondary);
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .hero-accent {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--secondary);
+      margin-bottom: 2rem;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .features-section {
+      padding: 4rem 2rem;
+      background: var(--white);
+    }
+
+    .features-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .features-header h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      padding: 2rem;
+      background: var(--background);
+      border-radius: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-card i {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      color: var(--secondary);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(51, 52, 70, 0.7);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 2rem;
+    }
+
+    .modal-content {
+      background: var(--white);
+      padding: 2.5rem;
+      border-radius: 1rem;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .modal-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--secondary);
+      cursor: pointer;
+      padding: 0;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover {
+      background: var(--background);
+      color: var(--danger);
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+
+    input, select {
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      background: var(--background);
+      color: var(--text);
+      transition: all 0.2s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(184, 207, 206, 0.1);
+    }
+
+    .divider {
+      margin: 1.5rem 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      position: relative;
+      background: var(--white);
+      padding: 0 1rem;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+
+    .oauth-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .oauth-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.875rem;
+      border: 2px solid var(--border);
+      border-radius: 0.5rem;
+      background: var(--white);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .oauth-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .dashboard {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .welcome-header {
+      margin-bottom: 2rem;
+    }
+
+    .welcome-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .message.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+
+    .message.success {
+      background: #efe;
+      color: #3a3;
+      border: 1px solid #cfc;
+    }
+
+    @media (max-width: 768px) {
+      .landing-nav {
+        padding: 1rem 2rem;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cookie Banner -->
+  <div id="cookieBanner" class="cookie-banner hidden">
+    <div class="cookie-content">
+      <h3>Privacy Notice</h3>
+      <p>We use essential cookies to keep you logged in and save your preferences. No tracking or advertising.</p>
+    </div>
+    <div class="cookie-actions">
+      <button class="btn btn-primary" onclick="acceptCookies()">
+        <i class="fas fa-check"></i> Accept
+      </button>
+      <button class="btn btn-outline" onclick="declineCookies()">
+        <i class="fas fa-times"></i> Decline
+      </button>
+    </div>
+  </div>
+
+  <!-- Landing Page -->
+  <div id="landingPage" class="landing">
+    <nav class="landing-nav">
+      <div class="logo">
+        <i class="fas fa-chart-line"></i>
+        <span id="navTitle">ClearBalance</span>
+      </div>
+      <div class="nav-actions">
+        <div class="lang-switcher">
+          <button class="lang-btn active" onclick="changeLanguage('en')">EN</button>
+          <button class="lang-btn" onclick="changeLanguage('de')">DE</button>
+          <button class="lang-btn" onclick="changeLanguage('pl')">PL</button>
+          <button class="lang-btn" onclick="changeLanguage('fr')">FR</button>
+          <button class="lang-btn" onclick="changeLanguage('es')">ES</button>
+          <button class="lang-btn" onclick="changeLanguage('it')">IT</button>
+        </div>
+        <button class="btn btn-primary" onclick="showAuth()">
+          <i class="fas fa-sign-in-alt"></i> <span id="getStartedBtn">Get Started</span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="hero">
+      <div class="hero-content">
+        <h1>
+          <span id="heroTitle1">Take Control of Your</span><br>
+          <span class="hero-accent" id="heroTitle2">Financial Future</span>
+        </h1>
+        <p id="heroSubtitle">Professional financial management made simple. Track expenses, manage investments, achieve your goals.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="showAuth()">
+            <i class="fas fa-rocket"></i> <span id="ctaStart">Start Free Today</span>
+          </button>
+          <button class="btn btn-outline" onclick="scrollToFeatures()">
+            <i class="fas fa-info-circle"></i> <span id="ctaLearn">Learn More</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="features-section" id="featuresSection">
+      <div class="features-container">
+        <div class="features-header">
+          <h2 id="featuresTitle">Everything You Need</h2>
+          <p id="featuresSubtitle" style="font-size: 1.1rem; color: var(--secondary);">Powerful features for complete financial control</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <i class="fas fa-globe"></i>
+            <h3 id="feature1Title">Multi-Currency Support</h3>
+            <p id="feature1Desc">Manage accounts in 50+ currencies with real-time conversion</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-chart-line"></i>
+            <h3 id="feature2Title">Investment Tracking</h3>
+            <p id="feature2Desc">Track stocks, crypto, real estate with live price updates</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-bullseye"></i>
+            <h3 id="feature3Title">Smart Budgeting</h3>
+            <p id="feature3Desc">Set goals, track spending, and optimize your finances</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-credit-card"></i>
+            <h3 id="feature4Title">Debt Management</h3>
+            <p id="feature4Desc">Calculate payoffs, track interest, become debt-free faster</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-piggy-bank"></i>
+            <h3 id="feature5Title">Piggy Banks</h3>
+            <p id="feature5Desc">Save for specific goals with virtual savings jars</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-chart-pie"></i>
+            <h3 id="feature6Title">Portfolio Analysis</h3>
+            <p id="feature6Desc">Detailed insights on your investment performance</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboardPage" class="dashboard hidden">
+    <div class="welcome-header">
+      <h1>Welcome, <span id="dashUserEmail">User</span>!</h1>
+      <button class="btn btn-outline" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+    <p>Dashboard is working! Your account is set up and ready to use.</p>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="authTitle">Get Started</h2>
+        <button class="close-btn" onclick="hideAuth()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div id="authError" class="message error hidden"></div>
+      <div id="authSuccess" class="message success hidden"></div>
+
+      <form id="authForm" class="form-grid">
+        <div class="form-group">
+          <label id="labelEmail">Email</label>
+          <input type="email" id="emailInput" required placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label id="labelPassword">Password</label>
+          <input type="password" id="passwordInput" required minlength="6" placeholder="Min 6 characters">
+        </div>
+        <div class="form-group">
+          <label id="labelCurrency">Primary Currency</label>
+          <select id="currencySelect" required>
+            <option value="">Select currency...</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          <i class="fas fa-check"></i> <span id="btnAuth">Sign In / Sign Up</span>
+        </button>
+      </form>
+
+      <div class="divider">
+        <span id="dividerText">or continue with</span>
+      </div>
+
+      <div class="oauth-btns">
+        <button class="oauth-btn" onclick="signInWithGoogle()">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span id="btnGoogle">Continue with Google</span>
+        </button>
+
+        <button class="oauth-btn" onclick="signInWithGitHub()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          <span id="btnGitHub">Continue with GitHub</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    // Translations
+    const translations = {
+      en: {
+        navTitle: 'ClearBalance',
+        getStartedBtn: 'Get Started',
+        heroTitle1: 'Take Control of Your',
+        heroTitle2: 'Financial Future',
+        heroSubtitle: 'Professional financial management made simple. Track expenses, manage investments, achieve your goals.',
+        ctaStart: 'Start Free Today',
+        ctaLearn: 'Learn More',
+        featuresTitle: 'Everything You Need',
+        featuresSubtitle: 'Powerful features for complete financial control',
+        feature1Title: 'Multi-Currency Support',
+        feature1Desc: 'Manage accounts in 50+ currencies with real-time conversion',
+        feature2Title: 'Investment Tracking',
+        feature2Desc: 'Track stocks, crypto, real estate with live price updates',
+        feature3Title: 'Smart Budgeting',
+        feature3Desc: 'Set goals, track spending, and optimize your finances',
+        feature4Title: 'Debt Management',
+        feature4Desc: 'Calculate payoffs, track interest, become debt-free faster',
+        feature5Title: 'Piggy Banks',
+        feature5Desc: 'Save for specific goals with virtual savings jars',
+        feature6Title: 'Portfolio Analysis',
+        feature6Desc: 'Detailed insights on your investment performance',
+        authTitle: 'Get Started',
+        labelEmail: 'Email',
+        labelPassword: 'Password',
+        labelCurrency: 'Primary Currency',
+        btnAuth: 'Sign In / Sign Up',
+        dividerText: 'or continue with',
+        btnGoogle: 'Continue with Google',
+        btnGitHub: 'Continue with GitHub'
+      },
+      de: {
+        navTitle: 'ClearBalance',
+        getStartedBtn: 'Loslegen',
+        heroTitle1: 'Übernehmen Sie die Kontrolle über Ihre',
+        heroTitle2: 'Finanzielle Zukunft',
+        heroSubtitle: 'Professionelles Finanzmanagement leicht gemacht.',
+        ctaStart: 'Kostenlos Starten',
+        ctaLearn: 'Mehr Erfahren',
+        featuresTitle: 'Alles was Sie brauchen',
+        authTitle: 'Loslegen',
+        labelEmail: 'E-Mail',
+        labelPassword: 'Passwort',
+        labelCurrency: 'Hauptwährung',
+        btnAuth: 'Anmelden / Registrieren',
+        dividerText: 'oder fortfahren mit',
+        btnGoogle: 'Mit Google fortfahren',
+        btnGitHub: 'Mit GitHub fortfahren'
+      },
+      pl: {
+        navTitle: 'ClearBalance',
+        getStartedBtn: 'Rozpocznij',
+        heroTitle1: 'Przejmij Kontrolę nad Swoją',
+        heroTitle2: 'Przyszłością Finansową',
+        heroSubtitle: 'Profesjonalne zarządzanie finansami w prosty sposób.',
+        ctaStart: 'Zacznij Za Darmo',
+        ctaLearn: 'Dowiedz się więcej',
+        featuresTitle: 'Wszystko czego potrzebujesz',
+        authTitle: 'Rozpocznij',
+        labelEmail: 'Email',
+        labelPassword: 'Hasło',
+        labelCurrency: 'Główna Waluta',
+        btnAuth: 'Zaloguj / Zarejestruj',
+        dividerText: 'lub kontynuuj z',
+        btnGoogle: 'Kontynuuj z Google',
+        btnGitHub: 'Kontynuuj z GitHub'
+      },
+      fr: {
+        navTitle: 'ClearBalance',
+        getStartedBtn: 'Commencer',
+        heroTitle1: 'Prenez le Contrôle de Votre',
+        heroTitle2: 'Avenir Financier',
+        heroSubtitle: 'Gestion financière professionnelle simplifiée.',
+        ctaStart: 'Commencer Gratuitement',
+        ctaLearn: 'En Savoir Plus',
+        authTitle: 'Commencer',
+        btnAuth: 'Se Connecter / S\'inscrire',
+        btnGoogle: 'Continuer avec Google',
+        btnGitHub: 'Continuer avec GitHub'
+      },
+      es: {
+        navTitle: 'ClearBalance',
+        getStartedBtn: 'Empezar',
+        heroTitle1: 'Toma el Control de Tu',
+        heroTitle2: 'Futuro Financiero',
+        heroSubtitle: 'Gestión financiera profesional simplificada.',
+        ctaStart: 'Comenzar Gratis',
+        ctaLearn: 'Saber Más',
+        authTitle: 'Empezar',
+        btnAuth: 'Iniciar Sesión / Registrarse',
+        btnGoogle: 'Continuar con Google',
+        btnGitHub: 'Continuar con GitHub'
+      },
+      it: {
+        navTitle: 'ClearBalance',
+        getStartedBtn: 'Inizia',
+        heroTitle1: 'Prendi il Controllo del Tuo',
+        heroTitle2: 'Futuro Finanziario',
+        heroSubtitle: 'Gestione finanziaria professionale semplificata.',
+        ctaStart: 'Inizia Gratuitamente',
+        ctaLearn: 'Scopri di Più',
+        authTitle: 'Inizia',
+        btnAuth: 'Accedi / Registrati',
+        btnGoogle: 'Continua con Google',
+        btnGitHub: 'Continua con GitHub'
+      }
+    };
+
+    let currentLang = 'en';
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('userLanguage', lang);
+      
+      // Update active button
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Update all text
+      const trans = translations[lang];
+      Object.keys(trans).forEach(key => {
+        const elem = document.getElementById(key);
+        if (elem) {
+          elem.textContent = trans[key];
+        }
+      });
+    }
+
+    // Configuration
+    const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
+
+    const currencies = {
+      PLN: {symbol: "zł"}, USD: {symbol: "$"}, EUR: {symbol: "€"}, GBP: {symbol: "£"},
+      JPY: {symbol: "¥"}, CHF: {symbol: "CHF"}, CAD: {symbol: "C$"}, AUD: {symbol: "A$"},
+      CNY: {symbol: "¥"}, INR: {symbol: "₹"}, BRL: {symbol: "R$"}, RUB: {symbol: "₽"}
+    };
+
+    let supabaseClient;
+    let currentUser = null;
+
+    function checkCookies() {
+      if (!localStorage.getItem('cookieConsent')) {
+        document.getElementById('cookieBanner').classList.remove('hidden');
+      }
+    }
+
+    function acceptCookies() {
+      localStorage.setItem('cookieConsent', 'accepted');
+      document.getElementById('cookieBanner').classList.add('hidden');
+    }
+
+    function declineCookies() {
+      localStorage.setItem('cookieConsent', 'declined');
+      document.getElementById('cookieBanner').classList.add('hidden');
+    }
+
+    function showAuth() {
+      document.getElementById('authModal').classList.remove('hidden');
+    }
+
+    function hideAuth() {
+      document.getElementById('authModal').classList.add('hidden');
+      hideError();
+      hideSuccess();
+    }
+
+    function scrollToFeatures() {
+      document.getElementById('featuresSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('authError');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function hideError() {
+      document.getElementById('authError').classList.add('hidden');
+    }
+
+    function showSuccess(msg) {
+      const el = document.getElementById('authSuccess');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function hideSuccess() {
+      document.getElementById('authSuccess').classList.add('hidden');
+    }
+
+    async function signInWithGoogle() {
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin
+          }
+        });
+        if (error) throw error;
+      } catch (error) {
+        showError('Google OAuth requires setup in Supabase dashboard. Use email/password instead.');
+      }
+    }
+
+    async function signInWithGitHub() {
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithOAuth({
+          provider: 'github',
+          options: {
+            redirectTo: window.location.origin
+          }
+        });
+        if (error) throw error;
+      } catch (error) {
+        showError('GitHub OAuth requires setup in Supabase dashboard. Use email/password instead.');
+      }
+    }
+
+    function populateCurrencies() {
+      const select = document.getElementById('currencySelect');
+      Object.keys(currencies).forEach(code => {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = code + ' - ' + currencies[code].symbol;
+        select.appendChild(option);
+      });
+    }
+
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.reload();
+    }
+
+    async function init() {
+      const { createClient } = supabase;
+      supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      checkCookies();
+      populateCurrencies();
+
+      // Load saved language
+      const savedLang = localStorage.getItem('userLanguage');
+      if (savedLang && translations[savedLang]) {
+        changeLanguage(savedLang);
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+          if (btn.textContent === savedLang.toUpperCase()) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+
+      // Check session
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      
+      if (!session) {
+        document.getElementById('landingPage').classList.remove('hidden');
+        document.getElementById('dashboardPage').classList.add('hidden');
+      } else {
+        currentUser = session.user;
+        document.getElementById('landingPage').classList.add('hidden');
+        document.getElementById('dashboardPage').classList.remove('hidden');
+        document.getElementById('dashUserEmail').textContent = currentUser.email;
+      }
+
+      // Setup auth form
+      document.getElementById('authForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideError();
+        hideSuccess();
+
+        const email = document.getElementById('emailInput').value;
+        const password = document.getElementById('passwordInput').value;
+        const currency = document.getElementById('currencySelect').value;
+
+        if (!currency) {
+          showError('Please select a currency');
+          return;
+        }
+
+        try {
+          // Try to sign in first
+          let { data, error } = await supabaseClient.auth.signInWithPassword({ 
+            email, 
+            password 
+          });
+
+          if (error) {
+            // If login fails, try to sign up
+            const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  primary_currency: currency
+                }
+              }
+            });
+
+            if (signUpError) {
+              throw signUpError;
+            }
+            
+            showSuccess('Account created! Logging you in...');
+            setTimeout(() => window.location.reload(), 2000);
+          } else {
+            // Login successful
+            showSuccess('Welcome back! Logging you in...');
+            setTimeout(() => window.location.reload(), 1000);
+          }
+        } catch (error) {
+          showError(error.message);
+        }
+      });
+    }
+
+    // Dark mode
+    function initTheme() {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    }
+
+    initTheme();
+    init();
+  </script>
+</body>
+</html>
