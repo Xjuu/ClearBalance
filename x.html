@@ -848,8 +848,12 @@
 
       // Check if already logged in
       const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session && !window.location.href.includes('landing')) {
+        return;
+      }
       if (session) {
-        window.location.href = 'clearbalance-dashboard.html';
+        localStorage.setItem('clearbalance_authenticated', 'true');
+        window.location.replace('clearbalance-dashboard.html');
         return;
       }
 
@@ -887,17 +891,19 @@
               
               if (signInError) throw signInError;
               
+              localStorage.setItem('clearbalance_authenticated', 'true');
               showSuccess('Welcome back! Redirecting...');
               setTimeout(() => {
-                window.location.href = 'clearbalance-dashboard.html';
+                window.location.replace('clearbalance-dashboard.html');
               }, 1000);
             } else {
               throw error;
             }
           } else {
+            localStorage.setItem('clearbalance_authenticated', 'true');
             showSuccess('Account created! Redirecting...');
             setTimeout(() => {
-              window.location.href = 'clearbalance-dashboard.html';
+              window.location.replace('clearbalance-dashboard.html');
             }, 1500);
           }
         } catch (error) {
