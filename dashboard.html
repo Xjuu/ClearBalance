@@ -772,19 +772,45 @@
                         </select>
                     </div>
                     <div class="form-group" id="tickerField">
-                        <label>Ticker Symbol</label>
+                        <label id="tickerLabel">Ticker Symbol</label>
                         <input type="text" id="assetTicker" placeholder="AAPL">
+                    </div>
+                    <div class="form-group" id="exchangeField" style="display:none;">
+                        <label>Stock Exchange</label>
+                        <select id="assetExchange">
+                            <option value="">USA (default)</option>
+                            <option value="L">London (LSE)</option>
+                            <option value="DE">Germany (XETRA)</option>
+                            <option value="PA">Paris (Euronext)</option>
+                            <option value="MI">Milan (Borsa)</option>
+                            <option value="AS">Amsterdam</option>
+                            <option value="BR">Brussels</option>
+                            <option value="SW">Switzerland</option>
+                            <option value="TO">Toronto</option>
+                            <option value="HK">Hong Kong</option>
+                            <option value="T">Tokyo</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="cryptoCurrencyField" style="display:none;">
+                        <label>Display Currency</label>
+                        <select id="cryptoCurrency">
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                            <option value="PLN">PLN</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Asset Name</label>
                         <input type="text" id="assetName" required placeholder="e.g., Apple Inc.">
                     </div>
                     <div class="form-group">
-                        <label>Quantity/Shares</label>
+                        <label id="quantityLabel">Quantity/Shares</label>
                         <input type="number" id="assetQuantity" step="0.000001" min="0" required>
                     </div>
                     <div class="form-group">
-                        <label>Purchase Price</label>
+                        <label id="priceLabel">Purchase Price</label>
                         <input type="number" id="assetPurchasePrice" step="0.01" min="0" required>
                     </div>
                     <div class="form-group full-width">
@@ -1428,10 +1454,15 @@
 
             const assetHTML = await Promise.all(assets.map(async asset => {
                 let currentPrice = asset.purchase_price;
+                let priceSource = 'Purchase Price';
                 
                 // Fetch real-time price for stocks/ETFs/crypto
                 if (asset.ticker && asset.type !== 'property') {
-                    currentPrice = await getStockPrice(asset.ticker);
+                    const livePrice = await getStockPrice(asset.ticker);
+                    if (livePrice && livePrice > 0) {
+                        currentPrice = livePrice;
+                        priceSource = 'Live Price';
+                    }
                 }
 
                 const currentValue = currentPrice * asset.quantity;
@@ -1442,12 +1473,35 @@
                 totalValue += currentValue;
                 totalCost += costBasis;
 
+                // Format ticker for display - remove exchange/currency suffix
+                let displayTicker = asset.ticker || asset.type.toUpperCase();
+                if (asset.ticker) {
+                    // Extract clean ticker (remove .L, .DE, -USD, etc.)
+                    const cleanTicker = asset.ticker.split(/[.-]/)[0];
+                    
+                    // Add badge for exchange/currency
+                    let badge = '';
+                    if (asset.type === 'crypto') {
+                        const currency = asset.ticker.includes('-') ? asset.ticker.split('-')[1] : 'USD';
+                        badge = `<span class="badge badge-info" style="margin-left:0.5rem;">${currency}</span>`;
+                    } else if (asset.ticker.includes('.')) {
+                        const exchange = asset.ticker.split('.')[1];
+                        const exchangeNames = {
+                            'L': 'LSE', 'DE': 'XETRA', 'PA': 'Paris', 'MI': 'Milan',
+                            'AS': 'Amsterdam', 'BR': 'Brussels', 'SW': 'Swiss', 
+                            'TO': 'Toronto', 'HK': 'HK', 'T': 'Tokyo'
+                        };
+                        badge = `<span class="badge badge-info" style="margin-left:0.5rem;">${exchangeNames[exchange] || exchange}</span>`;
+                    }
+                    displayTicker = cleanTicker + badge;
+                }
+
                 return `
                     <div class="asset-card">
                         <div class="asset-header">
                             <div>
                                 <div class="asset-name">${asset.name}</div>
-                                <div class="asset-ticker">${asset.ticker || asset.type.toUpperCase()}</div>
+                                <div class="asset-ticker">${displayTicker}</div>
                             </div>
                             <button class="btn-icon" onclick="deleteAsset('${asset.id}')">🗑️</button>
                         </div>
@@ -1457,7 +1511,8 @@
                             <span>${formatCurrency(Math.abs(gain))} (${gainPercent}%)</span>
                         </div>
                         <div style="margin-top:0.5rem; font-size:0.875rem; color:var(--secondary);">
-                            ${asset.quantity} shares @ ${formatCurrency(currentPrice)}
+                            ${asset.quantity} ${asset.type === 'crypto' ? 'units' : asset.type === 'property' ? 'properties' : 'shares'} @ ${formatCurrency(currentPrice)}
+                            ${priceSource === 'Purchase Price' ? '<span style="color:var(--warning);"> (offline)</span>' : ''}
                         </div>
                     </div>
                 `;
@@ -1478,18 +1533,37 @@
         }
 
         // Get stock price from Yahoo Finance (FREE!)
+        // Get stock price - Using multiple free sources with CORS support
         async function getStockPrice(ticker) {
             try {
-                const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}`;
-                const response = await fetch(url);
+                // Method 1: Try Yahoo Finance with CORS proxy
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}`;
+                
+                const response = await fetch(proxyUrl + encodeURIComponent(yahooUrl));
                 const data = await response.json();
                 
                 if (data.chart && data.chart.result && data.chart.result.length > 0) {
-                    return data.chart.result[0].meta.regularMarketPrice;
+                    const price = data.chart.result[0].meta.regularMarketPrice;
+                    if (price) return price;
                 }
             } catch (error) {
-                console.error('Error fetching stock price:', error);
+                console.log('Yahoo Finance failed, trying alternative...', error);
             }
+
+            try {
+                // Method 2: Fallback to Finnhub (free, no API key for basic quotes)
+                const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${ticker}&token=demo`);
+                const data = await response.json();
+                
+                if (data && data.c) {
+                    return data.c; // Current price
+                }
+            } catch (error) {
+                console.log('Finnhub failed, using purchase price...', error);
+            }
+
+            // If all methods fail, return null (will use purchase price)
             return null;
         }
 
@@ -2032,14 +2106,104 @@
                 }
             });
 
+            // Asset Type Handler - Dynamic form fields
+            document.getElementById('assetType').addEventListener('change', function() {
+                const assetType = this.value;
+                const tickerField = document.getElementById('tickerField');
+                const exchangeField = document.getElementById('exchangeField');
+                const cryptoCurrencyField = document.getElementById('cryptoCurrencyField');
+                const tickerLabel = document.getElementById('tickerLabel');
+                const tickerInput = document.getElementById('assetTicker');
+                const quantityLabel = document.getElementById('quantityLabel');
+                const priceLabel = document.getElementById('priceLabel');
+
+                // Reset all fields
+                exchangeField.style.display = 'none';
+                cryptoCurrencyField.style.display = 'none';
+                tickerField.style.display = 'block';
+                tickerInput.required = true;
+
+                if (assetType === 'stock') {
+                    tickerLabel.textContent = 'Ticker Symbol';
+                    tickerInput.placeholder = 'AAPL';
+                    exchangeField.style.display = 'block';
+                    quantityLabel.textContent = 'Quantity/Shares';
+                    priceLabel.textContent = 'Purchase Price per Share';
+                } else if (assetType === 'etf') {
+                    tickerLabel.textContent = 'ETF Symbol';
+                    tickerInput.placeholder = 'SPY';
+                    exchangeField.style.display = 'block';
+                    quantityLabel.textContent = 'Quantity/Shares';
+                    priceLabel.textContent = 'Purchase Price per Share';
+                } else if (assetType === 'crypto') {
+                    tickerLabel.textContent = 'Crypto Symbol';
+                    tickerInput.placeholder = 'BTC';
+                    cryptoCurrencyField.style.display = 'block';
+                    quantityLabel.textContent = 'Amount';
+                    priceLabel.textContent = 'Purchase Price per Unit';
+                } else if (assetType === 'property') {
+                    tickerField.style.display = 'none';
+                    tickerInput.required = false;
+                    tickerInput.value = '';
+                    quantityLabel.textContent = 'Units/Properties';
+                    priceLabel.textContent = 'Purchase Price per Unit';
+                }
+            });
+
+            // Auto-detect currency from crypto ticker
+            document.getElementById('assetTicker').addEventListener('input', function() {
+                const assetType = document.getElementById('assetType').value;
+                if (assetType === 'crypto') {
+                    const ticker = this.value.toUpperCase();
+                    const cryptoCurrencySelect = document.getElementById('cryptoCurrency');
+                    
+                    // Check if ticker contains currency suffix
+                    if (ticker.includes('-USD')) {
+                        cryptoCurrencySelect.value = 'USD';
+                        this.value = ticker.replace('-USD', '');
+                    } else if (ticker.includes('-EUR')) {
+                        cryptoCurrencySelect.value = 'EUR';
+                        this.value = ticker.replace('-EUR', '');
+                    } else if (ticker.includes('-GBP')) {
+                        cryptoCurrencySelect.value = 'GBP';
+                        this.value = ticker.replace('-GBP', '');
+                    } else if (ticker.includes('-JPY')) {
+                        cryptoCurrencySelect.value = 'JPY';
+                        this.value = ticker.replace('-JPY', '');
+                    } else if (ticker.includes('-PLN')) {
+                        cryptoCurrencySelect.value = 'PLN';
+                        this.value = ticker.replace('-PLN', '');
+                    }
+                }
+            });
+
             // Asset Form Submit
             document.getElementById('assetForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
 
+                const assetType = document.getElementById('assetType').value;
+                let ticker = document.getElementById('assetTicker').value.trim().toUpperCase();
+
+                // Build proper ticker based on asset type
+                if (assetType === 'stock' || assetType === 'etf') {
+                    const exchange = document.getElementById('assetExchange').value;
+                    if (exchange) {
+                        ticker = `${ticker}.${exchange}`;
+                    }
+                } else if (assetType === 'crypto') {
+                    const currency = document.getElementById('cryptoCurrency').value;
+                    // Only add suffix if not already present
+                    if (!ticker.includes('-')) {
+                        ticker = `${ticker}-${currency}`;
+                    }
+                } else if (assetType === 'property') {
+                    ticker = null; // No ticker for real estate
+                }
+
                 const formData = {
                     user_id: currentUser.id,
-                    type: document.getElementById('assetType').value,
-                    ticker: document.getElementById('assetTicker').value,
+                    type: assetType,
+                    ticker: ticker,
                     name: document.getElementById('assetName').value,
                     quantity: parseFloat(document.getElementById('assetQuantity').value),
                     purchase_price: parseFloat(document.getElementById('assetPurchasePrice').value),
@@ -2054,6 +2218,10 @@
                     closeModal('assetModal');
                     renderPage(currentPage);
                     e.target.reset();
+                    // Reset form to default state
+                    document.getElementById('exchangeField').style.display = 'none';
+                    document.getElementById('cryptoCurrencyField').style.display = 'none';
+                    document.getElementById('tickerField').style.display = 'block';
                 }
             });
 
