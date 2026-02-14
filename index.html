@@ -909,23 +909,16 @@
             </div>
             <div class="footer-links">
                 <h4>Product</h4>
-                <a href="#">Features</a>
-                <a href="#">Pricing</a>
-                <a href="#">Security</a>
-                <a href="#">Roadmap</a>
-            </div>
-            <div class="footer-links">
-                <h4>Company</h4>
-                <a href="#">About</a>
-                <a href="#">Blog</a>
-                <a href="#">Careers</a>
-                <a href="#">Contact</a>
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#security">Security</a>
+                <a href="#roadmap">Roadmap</a>
             </div>
             <div class="footer-links">
                 <h4>Legal</h4>
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-                <a href="#">Cookie Policy</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="cookie_policy.html">Cookie Policy</a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -957,6 +950,9 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" placeholder="••••••••" required>
                 </div>
+                <p style="font-size: 0.875rem; color: var(--secondary); margin-bottom: 1rem;">
+                    By continuing, you agree to our <a href="terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Privacy Policy</a>.
+                </p>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
             </form>
             <div class="divider">or</div>
@@ -977,13 +973,16 @@
                     Continue with GitHub
                 </button>
             </div>
+            <p style="font-size: 0.875rem; color: var(--secondary); margin-top: 1rem; text-align: center;">
+                By continuing, you agree to our <a href="terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Privacy Policy</a>.
+            </p>
         </div>
     </div>
 
     <script>
         // Configure Supabase
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Cookie Banner
