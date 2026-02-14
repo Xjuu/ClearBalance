@@ -1086,7 +1086,7 @@
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin + '/dashboard.html'
+                    redirectTo: 'https://dashboard.clearbalance.xyz'
                 }
             });
             if (error) console.error('Google auth error:', error);
@@ -1096,7 +1096,7 @@
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
-                    redirectTo: window.location.origin + '/dashboard.html'
+                    redirectTo: 'https://dashboard.clearbalance.xyz'
                 }
             });
             if (error) console.error('GitHub auth error:', error);
@@ -1130,7 +1130,7 @@
                     email,
                     password,
                     options: {
-                        emailRedirectTo: window.location.origin + '/dashboard.html'
+                        emailRedirectTo: 'https://dashboard.clearbalance.xyz'
                     }
                 });
 
@@ -1151,7 +1151,7 @@
                 if (error) {
                     alert('Error: ' + error.message);
                 } else {
-                    window.location.href = '/dashboard.html';
+                    window.location.href = 'https://dashboard.clearbalance.xyz';
                 }
             }
         });
@@ -1159,7 +1159,7 @@
         // Check if already authenticated
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             if (session) {
-                window.location.href = '/dashboard.html';
+                window.location.href = 'https://dashboard.clearbalance.xyz';
             }
         });
     </script>
