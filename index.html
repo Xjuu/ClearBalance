@@ -940,7 +940,18 @@
     <div class="modal" id="authModal">
         <div class="modal-content">
             <button class="modal-close" id="closeModal">×</button>
-            <h2>Welcome back</h2>
+            <h2 class="modal-title" id="modalTitle">Welcome back</h2>
+            
+            <!-- Toggle between Sign In / Sign Up -->
+            <div class="type-selector" style="margin-bottom: 2rem;">
+                <div class="type-option selected" data-mode="signin">
+                    <div class="type-option-label">Sign In</div>
+                </div>
+                <div class="type-option" data-mode="signup">
+                    <div class="type-option-label">Sign Up</div>
+                </div>
+            </div>
+
             <form id="emailAuthForm">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -948,12 +959,16 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
+                    <input type="password" id="password" placeholder="••••••••" required minlength="6">
+                </div>
+                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="••••••••" minlength="6">
                 </div>
                 <p style="font-size: 0.875rem; color: var(--secondary); margin-bottom: 1rem;">
                     By continuing, you agree to our <a href="terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Privacy Policy</a>.
                 </p>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                <button type="submit" class="btn btn-primary" id="authSubmitBtn" style="width: 100%;">Sign In</button>
             </form>
             <div class="divider">or</div>
             <div class="oauth-buttons">
@@ -1030,6 +1045,33 @@
             }
         });
 
+        // Auth mode toggle (Sign In / Sign Up)
+        let authMode = 'signin';
+        const authModeOptions = document.querySelectorAll('.type-option[data-mode]');
+        const modalTitle = document.getElementById('modalTitle');
+        const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
+
+        authModeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                authModeOptions.forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                authMode = this.dataset.mode;
+                
+                if (authMode === 'signup') {
+                    modalTitle.textContent = 'Create Account';
+                    confirmPasswordGroup.style.display = 'block';
+                    authSubmitBtn.textContent = 'Sign Up';
+                    document.getElementById('confirmPassword').required = true;
+                } else {
+                    modalTitle.textContent = 'Welcome back';
+                    confirmPasswordGroup.style.display = 'none';
+                    authSubmitBtn.textContent = 'Sign In';
+                    document.getElementById('confirmPassword').required = false;
+                }
+            });
+        });
+
         // Expandables
         document.querySelectorAll('.expandable-header').forEach(header => {
             header.addEventListener('click', () => {
@@ -1069,16 +1111,47 @@
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
+            if (authMode === 'signup') {
+                // Sign Up
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
 
-            if (error) {
-                alert('Error: ' + error.message);
+                if (password.length < 6) {
+                    alert('Password must be at least 6 characters long');
+                    return;
+                }
+
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        emailRedirectTo: window.location.origin + '/dashboard.html'
+                    }
+                });
+
+                if (error) {
+                    alert('Error: ' + error.message);
+                } else {
+                    alert('Success! Please check your email to confirm your account.');
+                    authModal.classList.remove('show');
+                    e.target.reset();
+                }
             } else {
-                window.location.href = '/dashboard.html';
+                // Sign In
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) {
+                    alert('Error: ' + error.message);
+                } else {
+                    window.location.href = '/dashboard.html';
+                }
             }
         });
 
