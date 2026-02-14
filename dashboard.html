@@ -954,9 +954,10 @@
         async function checkAuth() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) {
-                window.location.href = '/index.html';
-                return;
+            window.location.href = 'https://clearbalance.xyz'; 
+            return;
             }
+
             currentUser = session.user;
             updateProfileAvatar();
         }
