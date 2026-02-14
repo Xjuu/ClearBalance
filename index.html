@@ -998,7 +998,8 @@
         // Configure Supabase
         const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Cookie Banner
         const cookieBanner = document.getElementById('cookieBanner');
@@ -1082,7 +1083,7 @@
 
         // OAuth Authentication
         async function signInWithGoogle() {
-            const { data, error } = await supabase.auth.signInWithOAuth({
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: window.location.origin + '/dashboard.html'
@@ -1092,7 +1093,7 @@
         }
 
         async function signInWithGithub() {
-            const { data, error } = await supabase.auth.signInWithOAuth({
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
                     redirectTo: window.location.origin + '/dashboard.html'
@@ -1102,7 +1103,7 @@
         }
 
         document.getElementById('googleAuthBtn').addEventListener('click', signInWithGoogle);
-        document.getElementById('githubAuthBtn').addEventListener('click', signInWithGithub);
+        document.getElementById('githubAuthBtn').addEventListener('click', signInWithGoogle);
         document.getElementById('modalGoogleBtn').addEventListener('click', signInWithGoogle);
         document.getElementById('modalGithubBtn').addEventListener('click', signInWithGithub);
 
@@ -1125,7 +1126,7 @@
                     return;
                 }
 
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email,
                     password,
                     options: {
@@ -1142,7 +1143,7 @@
                 }
             } else {
                 // Sign In
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email,
                     password
                 });
@@ -1156,7 +1157,7 @@
         });
 
         // Check if already authenticated
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
             if (session) {
                 window.location.href = '/dashboard.html';
             }
