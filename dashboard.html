@@ -901,8 +901,7 @@
 
     <script>
         
-        // This allows Supabase to detect OAuth login on this domain
-        await supabase.auth.getSession();
+        
 
         
         // Configure Supabase
@@ -911,6 +910,18 @@
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        supabase.auth.onAuthStateChange((event, session) => {
+        console.log("Auth event:", event);
+
+        if (session) {
+            loadUser(session);
+        } else {
+            window.location.href = 'https://clearbalance.xyz';
+        }
+        });
+
+
+        
         // Global State
         let currentUser = null;
         let currentLanguage = 'en';
