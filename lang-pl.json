@@ -1,0 +1,270 @@
+{
+  "app_name": "ClearBalance",
+  "tagline": "Korporacyjny System Finansowy",
+  
+  "landing": {
+    "hero_title": "Inteligencja finansowa dla każdego.",
+    "hero_subtitle": "Od startupów do Fortune 500. Wiele walut. Wiele podmiotów. Bez limitów.",
+    "cta_google": "Kontynuuj z Google",
+    "cta_github": "Kontynuuj z GitHub",
+    "cta_email": "Zarejestruj się e-mailem",
+    "sign_in": "Zaloguj się",
+    "for_personal": "Dla Finansów Osobistych",
+    "for_business": "Dla Firm",
+    "for_enterprise": "Dla Korporacji"
+  },
+  
+  "nav": {
+    "overview": "Przegląd",
+    "accounts": "Konta",
+    "transactions": "Transakcje",
+    "recurring": "Cykliczne",
+    "subscriptions": "Subskrypcje",
+    "debts": "Długi i Pożyczki",
+    "piggy_banks": "Cele Oszczędnościowe",
+    "portfolio": "Portfolio",
+    "analytics": "Analityka",
+    "settings": "Ustawienia"
+  },
+  
+  "overview": {
+    "title": "Przegląd Finansowy",
+    "subtitle": "Kompletny obraz Twoich finansów",
+    "total_balance": "Całkowite Saldo",
+    "net_worth": "Wartość Netto",
+    "monthly_income": "Miesięczny Dochód",
+    "monthly_expenses": "Miesięczne Wydatki",
+    "cash_flow": "Przepływ Gotówki",
+    "recent_transactions": "Ostatnie Transakcje",
+    "quick_actions": "Szybkie Akcje",
+    "add_transaction": "Dodaj Transakcję",
+    "add_account": "Nowe Konto"
+  },
+  
+  "accounts": {
+    "title": "Konta",
+    "add_account": "Dodaj Konto",
+    "account_name": "Nazwa Konta",
+    "account_type": "Typ Konta",
+    "personal": "Osobiste",
+    "business": "Firmowe",
+    "currency": "Waluta",
+    "balance": "Obecne Saldo",
+    "iban": "IBAN",
+    "swift": "SWIFT/BIC",
+    "account_number": "Numer Konta",
+    "save": "Zapisz Konto",
+    "cancel": "Anuluj",
+    "edit": "Edytuj",
+    "delete": "Usuń"
+  },
+  
+  "transactions": {
+    "title": "Transakcje",
+    "add": "Dodaj Transakcję",
+    "type": "Typ",
+    "income": "Przychód",
+    "expense": "Wydatek",
+    "amount": "Kwota",
+    "category": "Kategoria",
+    "date": "Data",
+    "description": "Opis",
+    "account": "Konto",
+    "save": "Zapisz Transakcję",
+    "all": "Wszystkie Transakcje",
+    "filter": "Filtruj",
+    "export": "Eksportuj"
+  },
+  
+  "categories": {
+    "income": {
+      "salary": "Pensja",
+      "freelance": "Freelance",
+      "investment": "Zwroty z Inwestycji",
+      "rental": "Dochód z Najmu",
+      "business": "Przychody Firmy",
+      "grant": "Granty i Dotacje",
+      "dividend": "Dywidendy",
+      "interest": "Odsetki",
+      "other": "Inne Przychody"
+    },
+    "expense": {
+      "housing": "Mieszkanie i Czynsz",
+      "transportation": "Transport",
+      "food": "Jedzenie",
+      "utilities": "Media",
+      "healthcare": "Zdrowie",
+      "entertainment": "Rozrywka",
+      "shopping": "Zakupy",
+      "education": "Edukacja",
+      "insurance": "Ubezpieczenie",
+      "debt": "Spłata Długu",
+      "savings": "Oszczędności",
+      "payroll": "Wynagrodzenia",
+      "marketing": "Marketing",
+      "operations": "Operacje",
+      "taxes": "Podatki",
+      "legal": "Prawne",
+      "software": "Oprogramowanie",
+      "other": "Inne Wydatki"
+    }
+  },
+  
+  "recurring": {
+    "title": "Płatności Cykliczne",
+    "add": "Dodaj Płatność Cykliczną",
+    "name": "Nazwa Płatności",
+    "interval": "Częstotliwość",
+    "daily": "Dziennie",
+    "weekly": "Tygodniowo",
+    "monthly": "Miesięcznie",
+    "quarterly": "Kwartalnie",
+    "yearly": "Rocznie",
+    "next_payment": "Następna Płatność",
+    "active": "Aktywne",
+    "paused": "Wstrzymane"
+  },
+  
+  "subscriptions": {
+    "title": "Subskrypcje",
+    "add": "Dodaj Subskrypcję",
+    "name": "Nazwa Usługi",
+    "cost": "Koszt Miesięczny",
+    "billing_cycle": "Cykl Rozliczeniowy",
+    "next_billing": "Następne Rozliczenie",
+    "active": "Aktywne",
+    "cancelled": "Anulowane",
+    "total_spend": "Całkowity Roczny Koszt"
+  },
+  
+  "debts": {
+    "title": "Długi i Pożyczki",
+    "add": "Dodaj Dług",
+    "name": "Nazwa Długu",
+    "principal": "Kwota Główna",
+    "interest_rate": "Oprocentowanie (%)",
+    "payment_day": "Dzień Płatności",
+    "term_months": "Okres (Miesiące)",
+    "monthly_payment": "Płatność Miesięczna",
+    "remaining_balance": "Pozostałe Saldo",
+    "total_interest": "Całkowite Odsetki",
+    "start_date": "Data Początkowa",
+    "amortization": "Harmonogram Spłat",
+    "prepay": "Nadpłata",
+    "payoff_date": "Przewidywana Spłata"
+  },
+  
+  "piggy_banks": {
+    "title": "Cele Oszczędnościowe",
+    "add": "Nowy Cel Oszczędnościowy",
+    "name": "Nazwa Celu",
+    "target_amount": "Kwota Docelowa",
+    "current_amount": "Obecna Kwota",
+    "deadline": "Data Docelowa",
+    "progress": "Postęp",
+    "days_remaining": "Pozostało Dni",
+    "monthly_target": "Wymagane Miesięczne Oszczędności",
+    "on_track": "Na Dobrej Drodze",
+    "behind": "Opóźniony"
+  },
+  
+  "portfolio": {
+    "title": "Portfolio Inwestycyjne",
+    "add_asset": "Dodaj Aktywo",
+    "type": "Typ Aktywa",
+    "stock": "Akcje",
+    "etf": "ETF",
+    "crypto": "Kryptowaluta",
+    "property": "Nieruchomości",
+    "commodity": "Towar",
+    "ticker": "Symbol Giełdowy",
+    "name": "Nazwa Aktywa",
+    "quantity": "Ilość/Akcje",
+    "purchase_price": "Cena Zakupu",
+    "purchase_date": "Data Zakupu",
+    "current_value": "Obecna Wartość",
+    "total_value": "Całkowita Wartość Portfolio",
+    "total_gain_loss": "Całkowity Zysk/Strata",
+    "allocation": "Alokacja Aktywów",
+    "performance": "Wyniki",
+    "refresh_prices": "Odśwież Ceny",
+    "ytd_return": "Zwrot YTD",
+    "total_return": "Całkowity Zwrot"
+  },
+  
+  "analytics": {
+    "title": "Analityka i Spostrzeżenia",
+    "financial_health": "Wynik Zdrowia Finansowego",
+    "income_vs_expenses": "Przychody vs Wydatki",
+    "spending_by_category": "Wydatki według Kategorii",
+    "net_worth_trend": "Trend Wartości Netto",
+    "forecast": "Prognoza 6-Miesięczna",
+    "savings_rate": "Wskaźnik Oszczędności",
+    "debt_to_income": "Wskaźnik Zadłużenia",
+    "burn_rate": "Tempo Spalania Gotówki",
+    "runway": "Runway (Miesiące)",
+    "budget_vs_actual": "Budżet vs Rzeczywiste"
+  },
+  
+  "settings": {
+    "title": "Ustawienia",
+    "profile": "Profil",
+    "preferences": "Preferencje",
+    "language": "Język",
+    "theme": "Motyw",
+    "light": "Jasny",
+    "dark": "Ciemny",
+    "auto": "Automatyczny",
+    "default_mode": "Tryb Domyślny",
+    "advanced_mode": "Tryb Zaawansowany",
+    "advanced_mode_desc": "Pokaż IBAN, SWIFT, zaawansowane raporty i funkcje korporacyjne",
+    "logout": "Wyloguj",
+    "save_changes": "Zapisz Zmiany",
+    "export_data": "Eksportuj Wszystkie Dane",
+    "import_data": "Importuj Dane"
+  },
+  
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Wystąpił błąd",
+    "success": "Sukces!",
+    "confirm": "Potwierdź",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "close": "Zamknij",
+    "search": "Szukaj",
+    "filter": "Filtruj",
+    "export": "Eksportuj",
+    "import": "Importuj",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "yes": "Tak",
+    "no": "Nie",
+    "total": "Razem",
+    "subtotal": "Suma częściowa",
+    "average": "Średnia",
+    "trend": "Trend"
+  },
+  
+  "cookies": {
+    "title": "Używamy niezbędnych ciasteczek",
+    "message": "Używamy tylko niezbędnych ciasteczek, aby utrzymać Cię zalogowanym i zapisać Twoje preferencje. Bez śledzenia, bez analityki.",
+    "accept": "Akceptuj",
+    "decline": "Odrzuć"
+  },
+  
+  "features": {
+    "multi_currency": "Globalne Wsparcie Walutowe",
+    "multi_currency_desc": "Śledź ponad 50 walut z konwersją w czasie rzeczywistym. Idealne dla firm międzynarodowych.",
+    "portfolio": "Inteligencja Inwestycyjna",
+    "portfolio_desc": "Śledzenie portfolio w czasie rzeczywistym z integracją Yahoo Finance. Akcje, ETF, krypto, nieruchomości.",
+    "debt_engine": "Zarządzanie Długiem",
+    "debt_engine_desc": "Zaawansowany kalkulator amortyzacji ze scenariuszami nadpłat. Zoptymalizuj strategię spłaty długu.",
+    "business": "Biznes i Korporacje",
+    "business_desc": "IBAN, SWIFT, wsparcie wielu podmiotów, śledzenie wynagrodzeń, raporty P&L. Od startupu do korporacji.",
+    "security": "Bezpieczeństwo Bankowe",
+    "security_desc": "Bezpieczeństwo na poziomie wiersza, OAuth 2.0, szyfrowanie. Gotowe na SOC 2 Type II.",
+    "analytics": "Analityka Predykcyjna",
+    "analytics_desc": "Prognozowanie oparte na AI, analiza tempa spalania, kalkulacje runway. Podejmuj decyzje oparte na danych."
+  }
+}

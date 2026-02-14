@@ -1,0 +1,270 @@
+{
+  "app_name": "ClearBalance",
+  "tagline": "Enterprise Financial Operating System",
+  
+  "landing": {
+    "hero_title": "Financial intelligence for everyone.",
+    "hero_subtitle": "From startups to Fortune 500. Multi-currency. Multi-entity. Zero limits.",
+    "cta_google": "Continue with Google",
+    "cta_github": "Continue with GitHub",
+    "cta_email": "Sign up with Email",
+    "sign_in": "Sign in",
+    "for_personal": "For Personal Finance",
+    "for_business": "For Businesses",
+    "for_enterprise": "For Enterprises"
+  },
+  
+  "nav": {
+    "overview": "Overview",
+    "accounts": "Accounts",
+    "transactions": "Transactions",
+    "recurring": "Recurring",
+    "subscriptions": "Subscriptions",
+    "debts": "Debts & Loans",
+    "piggy_banks": "Savings Goals",
+    "portfolio": "Portfolio",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  
+  "overview": {
+    "title": "Financial Overview",
+    "subtitle": "Your complete financial picture",
+    "total_balance": "Total Balance",
+    "net_worth": "Net Worth",
+    "monthly_income": "Monthly Income",
+    "monthly_expenses": "Monthly Expenses",
+    "cash_flow": "Cash Flow",
+    "recent_transactions": "Recent Transactions",
+    "quick_actions": "Quick Actions",
+    "add_transaction": "Add Transaction",
+    "add_account": "New Account"
+  },
+  
+  "accounts": {
+    "title": "Accounts",
+    "add_account": "Add Account",
+    "account_name": "Account Name",
+    "account_type": "Account Type",
+    "personal": "Personal",
+    "business": "Business",
+    "currency": "Currency",
+    "balance": "Current Balance",
+    "iban": "IBAN",
+    "swift": "SWIFT/BIC",
+    "account_number": "Account Number",
+    "save": "Save Account",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  
+  "transactions": {
+    "title": "Transactions",
+    "add": "Add Transaction",
+    "type": "Type",
+    "income": "Income",
+    "expense": "Expense",
+    "amount": "Amount",
+    "category": "Category",
+    "date": "Date",
+    "description": "Description",
+    "account": "Account",
+    "save": "Save Transaction",
+    "all": "All Transactions",
+    "filter": "Filter",
+    "export": "Export"
+  },
+  
+  "categories": {
+    "income": {
+      "salary": "Salary",
+      "freelance": "Freelance",
+      "investment": "Investment Returns",
+      "rental": "Rental Income",
+      "business": "Business Revenue",
+      "grant": "Grants & Funding",
+      "dividend": "Dividends",
+      "interest": "Interest Income",
+      "other": "Other Income"
+    },
+    "expense": {
+      "housing": "Housing & Rent",
+      "transportation": "Transportation",
+      "food": "Food & Dining",
+      "utilities": "Utilities",
+      "healthcare": "Healthcare",
+      "entertainment": "Entertainment",
+      "shopping": "Shopping",
+      "education": "Education",
+      "insurance": "Insurance",
+      "debt": "Debt Payment",
+      "savings": "Savings",
+      "payroll": "Payroll",
+      "marketing": "Marketing",
+      "operations": "Operations",
+      "taxes": "Taxes",
+      "legal": "Legal & Compliance",
+      "software": "Software & Tools",
+      "other": "Other Expenses"
+    }
+  },
+  
+  "recurring": {
+    "title": "Recurring Payments",
+    "add": "Add Recurring Payment",
+    "name": "Payment Name",
+    "interval": "Frequency",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "quarterly": "Quarterly",
+    "yearly": "Yearly",
+    "next_payment": "Next Payment",
+    "active": "Active",
+    "paused": "Paused"
+  },
+  
+  "subscriptions": {
+    "title": "Subscriptions",
+    "add": "Add Subscription",
+    "name": "Service Name",
+    "cost": "Monthly Cost",
+    "billing_cycle": "Billing Cycle",
+    "next_billing": "Next Billing Date",
+    "active": "Active",
+    "cancelled": "Cancelled",
+    "total_spend": "Total Annual Spend"
+  },
+  
+  "debts": {
+    "title": "Debts & Loans",
+    "add": "Add Debt",
+    "name": "Debt Name",
+    "principal": "Principal Amount",
+    "interest_rate": "Interest Rate (%)",
+    "payment_day": "Payment Day",
+    "term_months": "Term (Months)",
+    "monthly_payment": "Monthly Payment",
+    "remaining_balance": "Remaining Balance",
+    "total_interest": "Total Interest",
+    "start_date": "Start Date",
+    "amortization": "Amortization Schedule",
+    "prepay": "Extra Payment",
+    "payoff_date": "Projected Payoff"
+  },
+  
+  "piggy_banks": {
+    "title": "Savings Goals",
+    "add": "New Savings Goal",
+    "name": "Goal Name",
+    "target_amount": "Target Amount",
+    "current_amount": "Current Amount",
+    "deadline": "Target Date",
+    "progress": "Progress",
+    "days_remaining": "Days Remaining",
+    "monthly_target": "Monthly Savings Needed",
+    "on_track": "On Track",
+    "behind": "Behind Schedule"
+  },
+  
+  "portfolio": {
+    "title": "Investment Portfolio",
+    "add_asset": "Add Asset",
+    "type": "Asset Type",
+    "stock": "Stock",
+    "etf": "ETF",
+    "crypto": "Cryptocurrency",
+    "property": "Real Estate",
+    "commodity": "Commodity",
+    "ticker": "Ticker Symbol",
+    "name": "Asset Name",
+    "quantity": "Quantity/Shares",
+    "purchase_price": "Purchase Price",
+    "purchase_date": "Purchase Date",
+    "current_value": "Current Value",
+    "total_value": "Total Portfolio Value",
+    "total_gain_loss": "Total Gain/Loss",
+    "allocation": "Asset Allocation",
+    "performance": "Performance",
+    "refresh_prices": "Refresh Prices",
+    "ytd_return": "YTD Return",
+    "total_return": "Total Return"
+  },
+  
+  "analytics": {
+    "title": "Analytics & Insights",
+    "financial_health": "Financial Health Score",
+    "income_vs_expenses": "Income vs Expenses",
+    "spending_by_category": "Spending by Category",
+    "net_worth_trend": "Net Worth Trend",
+    "forecast": "6-Month Forecast",
+    "savings_rate": "Savings Rate",
+    "debt_to_income": "Debt-to-Income Ratio",
+    "burn_rate": "Cash Burn Rate",
+    "runway": "Runway (Months)",
+    "budget_vs_actual": "Budget vs Actual"
+  },
+  
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "auto": "Auto",
+    "default_mode": "Default Mode",
+    "advanced_mode": "Advanced Mode",
+    "advanced_mode_desc": "Show IBAN, SWIFT, advanced reports, and enterprise features",
+    "logout": "Logout",
+    "save_changes": "Save Changes",
+    "export_data": "Export All Data",
+    "import_data": "Import Data"
+  },
+  
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "save": "Save",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "average": "Average",
+    "trend": "Trend"
+  },
+  
+  "cookies": {
+    "title": "We use essential cookies",
+    "message": "We only use essential cookies to keep you signed in and store your preferences. No tracking, no analytics.",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  
+  "features": {
+    "multi_currency": "Global Currency Support",
+    "multi_currency_desc": "Track 50+ currencies with real-time conversion. Perfect for international businesses.",
+    "portfolio": "Investment Intelligence",
+    "portfolio_desc": "Real-time portfolio tracking with Yahoo Finance integration. Stocks, ETFs, crypto, real estate.",
+    "debt_engine": "Debt Management",
+    "debt_engine_desc": "Advanced amortization calculator with prepayment scenarios. Optimize your debt payoff strategy.",
+    "business": "Business & Enterprise",
+    "business_desc": "IBAN, SWIFT, multi-entity support, payroll tracking, P&L reports. Scale from startup to enterprise.",
+    "security": "Bank-Grade Security",
+    "security_desc": "Row-level security, OAuth 2.0, encrypted at rest. SOC 2 Type II ready.",
+    "analytics": "Predictive Analytics",
+    "analytics_desc": "AI-powered forecasting, burn rate analysis, runway calculations. Make data-driven decisions."
+  }
+}

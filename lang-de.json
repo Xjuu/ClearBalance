@@ -1,0 +1,270 @@
+{
+  "app_name": "ClearBalance",
+  "tagline": "Unternehmens-Finanzsystem",
+  
+  "landing": {
+    "hero_title": "Finanzintelligenz für alle.",
+    "hero_subtitle": "Von Startups bis Fortune 500. Mehrere Währungen. Mehrere Einheiten. Keine Grenzen.",
+    "cta_google": "Mit Google fortfahren",
+    "cta_github": "Mit GitHub fortfahren",
+    "cta_email": "Mit E-Mail registrieren",
+    "sign_in": "Anmelden",
+    "for_personal": "Für Privatfinanzen",
+    "for_business": "Für Unternehmen",
+    "for_enterprise": "Für Konzerne"
+  },
+  
+  "nav": {
+    "overview": "Übersicht",
+    "accounts": "Konten",
+    "transactions": "Transaktionen",
+    "recurring": "Wiederkehrend",
+    "subscriptions": "Abonnements",
+    "debts": "Schulden & Darlehen",
+    "piggy_banks": "Sparziele",
+    "portfolio": "Portfolio",
+    "analytics": "Analytik",
+    "settings": "Einstellungen"
+  },
+  
+  "overview": {
+    "title": "Finanzübersicht",
+    "subtitle": "Ihr komplettes Finanzbild",
+    "total_balance": "Gesamtsaldo",
+    "net_worth": "Nettovermögen",
+    "monthly_income": "Monatliches Einkommen",
+    "monthly_expenses": "Monatliche Ausgaben",
+    "cash_flow": "Cashflow",
+    "recent_transactions": "Letzte Transaktionen",
+    "quick_actions": "Schnellaktionen",
+    "add_transaction": "Transaktion hinzufügen",
+    "add_account": "Neues Konto"
+  },
+  
+  "accounts": {
+    "title": "Konten",
+    "add_account": "Konto hinzufügen",
+    "account_name": "Kontoname",
+    "account_type": "Kontotyp",
+    "personal": "Privat",
+    "business": "Geschäftlich",
+    "currency": "Währung",
+    "balance": "Aktuelles Guthaben",
+    "iban": "IBAN",
+    "swift": "SWIFT/BIC",
+    "account_number": "Kontonummer",
+    "save": "Konto speichern",
+    "cancel": "Abbrechen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen"
+  },
+  
+  "transactions": {
+    "title": "Transaktionen",
+    "add": "Transaktion hinzufügen",
+    "type": "Typ",
+    "income": "Einnahmen",
+    "expense": "Ausgaben",
+    "amount": "Betrag",
+    "category": "Kategorie",
+    "date": "Datum",
+    "description": "Beschreibung",
+    "account": "Konto",
+    "save": "Transaktion speichern",
+    "all": "Alle Transaktionen",
+    "filter": "Filtern",
+    "export": "Exportieren"
+  },
+  
+  "categories": {
+    "income": {
+      "salary": "Gehalt",
+      "freelance": "Freiberuflich",
+      "investment": "Kapitalerträge",
+      "rental": "Mieteinnahmen",
+      "business": "Geschäftseinnahmen",
+      "grant": "Zuschüsse & Förderung",
+      "dividend": "Dividenden",
+      "interest": "Zinserträge",
+      "other": "Sonstige Einnahmen"
+    },
+    "expense": {
+      "housing": "Wohnung & Miete",
+      "transportation": "Transport",
+      "food": "Essen & Trinken",
+      "utilities": "Nebenkosten",
+      "healthcare": "Gesundheit",
+      "entertainment": "Unterhaltung",
+      "shopping": "Einkaufen",
+      "education": "Bildung",
+      "insurance": "Versicherung",
+      "debt": "Schuldenzahlung",
+      "savings": "Ersparnisse",
+      "payroll": "Lohn- und Gehaltsabrechnung",
+      "marketing": "Marketing",
+      "operations": "Betrieb",
+      "taxes": "Steuern",
+      "legal": "Rechtliches",
+      "software": "Software & Tools",
+      "other": "Sonstige Ausgaben"
+    }
+  },
+  
+  "recurring": {
+    "title": "Wiederkehrende Zahlungen",
+    "add": "Wiederkehrende Zahlung hinzufügen",
+    "name": "Zahlungsname",
+    "interval": "Häufigkeit",
+    "daily": "Täglich",
+    "weekly": "Wöchentlich",
+    "monthly": "Monatlich",
+    "quarterly": "Vierteljährlich",
+    "yearly": "Jährlich",
+    "next_payment": "Nächste Zahlung",
+    "active": "Aktiv",
+    "paused": "Pausiert"
+  },
+  
+  "subscriptions": {
+    "title": "Abonnements",
+    "add": "Abonnement hinzufügen",
+    "name": "Dienstname",
+    "cost": "Monatliche Kosten",
+    "billing_cycle": "Abrechnungszyklus",
+    "next_billing": "Nächste Abrechnung",
+    "active": "Aktiv",
+    "cancelled": "Gekündigt",
+    "total_spend": "Jährliche Gesamtausgaben"
+  },
+  
+  "debts": {
+    "title": "Schulden & Darlehen",
+    "add": "Schuld hinzufügen",
+    "name": "Schuldname",
+    "principal": "Hauptbetrag",
+    "interest_rate": "Zinssatz (%)",
+    "payment_day": "Zahlungstag",
+    "term_months": "Laufzeit (Monate)",
+    "monthly_payment": "Monatliche Zahlung",
+    "remaining_balance": "Restbetrag",
+    "total_interest": "Gesamtzinsen",
+    "start_date": "Startdatum",
+    "amortization": "Tilgungsplan",
+    "prepay": "Sondertilgung",
+    "payoff_date": "Voraussichtliche Rückzahlung"
+  },
+  
+  "piggy_banks": {
+    "title": "Sparziele",
+    "add": "Neues Sparziel",
+    "name": "Zielname",
+    "target_amount": "Zielbetrag",
+    "current_amount": "Aktueller Betrag",
+    "deadline": "Zieldatum",
+    "progress": "Fortschritt",
+    "days_remaining": "Verbleibende Tage",
+    "monthly_target": "Monatlich benötigte Ersparnisse",
+    "on_track": "Auf Kurs",
+    "behind": "Im Rückstand"
+  },
+  
+  "portfolio": {
+    "title": "Anlageportfolio",
+    "add_asset": "Vermögenswert hinzufügen",
+    "type": "Vermögenstyp",
+    "stock": "Aktien",
+    "etf": "ETF",
+    "crypto": "Kryptowährung",
+    "property": "Immobilien",
+    "commodity": "Rohstoff",
+    "ticker": "Tickersymbol",
+    "name": "Vermögensname",
+    "quantity": "Menge/Aktien",
+    "purchase_price": "Kaufpreis",
+    "purchase_date": "Kaufdatum",
+    "current_value": "Aktueller Wert",
+    "total_value": "Gesamtportfoliowert",
+    "total_gain_loss": "Gesamtgewinn/-verlust",
+    "allocation": "Vermögensaufteilung",
+    "performance": "Leistung",
+    "refresh_prices": "Preise aktualisieren",
+    "ytd_return": "YTD-Rendite",
+    "total_return": "Gesamtrendite"
+  },
+  
+  "analytics": {
+    "title": "Analytik & Einblicke",
+    "financial_health": "Finanzielle Gesundheit",
+    "income_vs_expenses": "Einnahmen vs. Ausgaben",
+    "spending_by_category": "Ausgaben nach Kategorie",
+    "net_worth_trend": "Nettovermögenstrend",
+    "forecast": "6-Monats-Prognose",
+    "savings_rate": "Sparquote",
+    "debt_to_income": "Schulden-Einkommens-Verhältnis",
+    "burn_rate": "Verbrennungsrate",
+    "runway": "Runway (Monate)",
+    "budget_vs_actual": "Budget vs Ist"
+  },
+  
+  "settings": {
+    "title": "Einstellungen",
+    "profile": "Profil",
+    "preferences": "Einstellungen",
+    "language": "Sprache",
+    "theme": "Thema",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "auto": "Automatisch",
+    "default_mode": "Standardmodus",
+    "advanced_mode": "Erweiterter Modus",
+    "advanced_mode_desc": "IBAN, SWIFT, erweiterte Berichte und Unternehmensfunktionen anzeigen",
+    "logout": "Abmelden",
+    "save_changes": "Änderungen speichern",
+    "export_data": "Alle Daten exportieren",
+    "import_data": "Daten importieren"
+  },
+  
+  "common": {
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolg!",
+    "confirm": "Bestätigen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "yes": "Ja",
+    "no": "Nein",
+    "total": "Gesamt",
+    "subtotal": "Zwischensumme",
+    "average": "Durchschnitt",
+    "trend": "Trend"
+  },
+  
+  "cookies": {
+    "title": "Wir verwenden notwendige Cookies",
+    "message": "Wir verwenden nur notwendige Cookies, um Sie angemeldet zu halten und Ihre Einstellungen zu speichern. Kein Tracking, keine Analytik.",
+    "accept": "Akzeptieren",
+    "decline": "Ablehnen"
+  },
+  
+  "features": {
+    "multi_currency": "Globale Währungsunterstützung",
+    "multi_currency_desc": "Verfolgen Sie über 50 Währungen mit Echtzeitkonvertierung. Perfekt für internationale Unternehmen.",
+    "portfolio": "Investment-Intelligenz",
+    "portfolio_desc": "Echtzeit-Portfolio-Tracking mit Yahoo Finance-Integration. Aktien, ETFs, Krypto, Immobilien.",
+    "debt_engine": "Schuldenverwaltung",
+    "debt_engine_desc": "Erweiterter Amortisationsrechner mit Szenarien für Sondertilgungen. Optimieren Sie Ihre Schuldenrückzahlungsstrategie.",
+    "business": "Geschäft & Unternehmen",
+    "business_desc": "IBAN, SWIFT, Mehrmandantenfähigkeit, Lohnabrechnung, GuV-Berichte. Vom Startup zum Konzern.",
+    "security": "Banksicherheit",
+    "security_desc": "Zeilensicherheit, OAuth 2.0, Verschlüsselung im Ruhezustand. SOC 2 Type II bereit.",
+    "analytics": "Prädiktive Analytik",
+    "analytics_desc": "KI-gestützte Prognosen, Burn-Rate-Analyse, Runway-Berechnungen. Treffen Sie datengesteuerte Entscheidungen."
+  }
+}
