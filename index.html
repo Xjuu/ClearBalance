@@ -736,8 +736,8 @@
                 <span>ClearBalance</span>
             </div>
             <div class="nav-actions">
-                <a href="#" class="btn btn-ghost" id="signInBtn">Sign In</a>
-                <a href="#" class="btn btn-primary" id="getStartedBtn">Get Started</a>
+                <button class="btn btn-ghost" id="signInBtn">Sign In</button>
+                <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
             </div>
         </div>
     </nav>
@@ -1012,13 +1012,11 @@
         const getStartedBtn = document.getElementById('getStartedBtn');
         const closeModal = document.getElementById('closeModal');
 
-        signInBtn.addEventListener('click', (e) => {
-            e.preventDefault();
+        signInBtn.addEventListener('click', () => {
             authModal.classList.add('show');
         });
 
-        getStartedBtn.addEventListener('click', (e) => {
-            e.preventDefault();
+        getStartedBtn.addEventListener('click', () => {
             authModal.classList.add('show');
         });
 
