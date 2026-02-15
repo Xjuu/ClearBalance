@@ -950,87 +950,65 @@
 
         // Initialize App
         async function initApp() {
-            await checkAuth();
-            await loadLanguage(currentLanguage);
-            await loadUserProfile();
-            await loadAccounts();
-            populateCurrencies();
-            renderPage('overview');
-            setupEventListeners();
+            try {
+                console.log('Initializing ClearBalance...');
+                
+                const hasSession = await checkAuth();
+                if (!hasSession) {
+                    console.log('No session, stopping initialization');
+                    return;
+                }
+                
+                console.log('Loading language...');
+                await loadLanguage(currentLanguage);
+                
+                console.log('Loading user profile...');
+                await loadUserProfile();
+                
+                console.log('Loading accounts...');
+                await loadAccounts();
+                
+                console.log('Populating currencies...');
+                populateCurrencies();
+                
+                console.log('Rendering overview page...');
+                renderPage('overview');
+                
+                console.log('Setting up event listeners...');
+                setupEventListeners();
+                
+                console.log('✓ ClearBalance initialized successfully!');
+            } catch (error) {
+                console.error('❌ Initialization error:', error);
+                alert('Error loading dashboard: ' + error.message + '\n\nCheck console for details.');
+            }
         }
 
-        // Authentication with retry and loop prevention
+        // Authentication - simplified to prevent false negatives
         async function checkAuth() {
-            // Check if we just navigated here from landing
-            const navigatingFromLanding = sessionStorage.getItem('navigating-to-dashboard');
-            if (navigatingFromLanding) {
-                sessionStorage.removeItem('navigating-to-dashboard');
-            }
-
-            // Prevent redirect loop - check if we already tried
-            const redirectAttempts = parseInt(sessionStorage.getItem('auth-redirect-attempts') || '0');
-            
             try {
-                // First, try to get the session
-                let { data: { session }, error } = await supabaseClient.auth.getSession();
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
                 
-                // If no session, check if we have a hash/fragment (OAuth callback)
-                if (!session && window.location.hash) {
-                    console.log('Detected OAuth callback, waiting for session...');
-                    // Wait a bit for Supabase to process the OAuth callback
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    const result = await supabaseClient.auth.getSession();
-                    session = result.data.session;
-                    error = result.error;
-                }
-
                 if (error) {
-                    console.error('Auth error:', error);
-                    throw error;
+                    console.error('Session error:', error);
                 }
 
-                if (!session) {
-                    // No session - but don't redirect immediately if we just got here
-                    if (navigatingFromLanding) {
-                        // Just came from landing page with intent to view dashboard
-                        // Wait a moment for auth to settle
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                        const retry = await supabaseClient.auth.getSession();
-                        if (retry.data.session) {
-                            session = retry.data.session;
-                        } else {
-                            throw new Error('No session found after redirect');
-                        }
-                    } else {
-                        throw new Error('No session found');
-                    }
-                }
-
-                // Success - clear redirect attempts
-                sessionStorage.removeItem('auth-redirect-attempts');
-                currentUser = session.user;
-                updateProfileAvatar();
-                
-                console.log('Authentication successful:', currentUser.email);
-            } catch (error) {
-                console.error('Auth check failed:', error.message);
-                
-                // Only redirect if we haven't tried too many times
-                if (redirectAttempts < 2) {
-                    sessionStorage.setItem('auth-redirect-attempts', (redirectAttempts + 1).toString());
-                    sessionStorage.setItem('from-dashboard', 'true');
-                    
-                    // Show user-friendly message
-                    if (confirm('Authentication error. Please try logging in again.\n\nClick OK to go to login page.')) {
-                        window.location.href = 'https://clearbalance.xyz';
-                    }
+                if (session) {
+                    // Session exists - we're good!
+                    currentUser = session.user;
+                    updateProfileAvatar();
+                    console.log('✓ Authenticated as:', currentUser.email);
+                    return true;
                 } else {
-                    // Too many attempts - clear everything and force fresh login
-                    sessionStorage.clear();
-                    localStorage.removeItem('clearbalance-auth');
-                    alert('Authentication error. Please try logging in again.');
+                    // Only redirect if definitely no session
+                    console.log('No session found, redirecting to login');
                     window.location.href = 'https://clearbalance.xyz';
+                    return false;
                 }
+            } catch (error) {
+                console.error('Auth check exception:', error);
+                // Don't redirect on error, might be temporary
+                return false;
             }
         }
 
