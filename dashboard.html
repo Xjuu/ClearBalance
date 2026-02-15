@@ -900,28 +900,12 @@
     </div>
 
     <script>
-        
-        
-
-        
         // Configure Supabase
         const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        supabase.auth.onAuthStateChange((event, session) => {
-        console.log("Auth event:", event);
-
-        if (session) {
-            loadUser(session);
-        } else {
-            window.location.href = 'https://clearbalance.xyz';
-        }
-        });
-
-
-        
         // Global State
         let currentUser = null;
         let currentLanguage = 'en';
@@ -970,10 +954,9 @@
         async function checkAuth() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) {
-            window.location.href = 'https://clearbalance.xyz'; 
-            return;
+                window.location.href = 'https://clearbalance.xyz';
+                return;
             }
-
             currentUser = session.user;
             updateProfileAvatar();
         }
@@ -2319,7 +2302,7 @@
 
         async function signOut() {
             await supabaseClient.auth.signOut();
-            window.location.href = 'https://dashboard.clearbalance.xyz';
+            window.location.href = 'https://clearbalance.xyz';
         }
 
         // Initialize on load
