@@ -900,11 +900,20 @@
     </div>
 
     <script>
-        // Configure Supabase
+        // Configure Supabase with persistent session
         const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
         const { createClient } = supabase;
-        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true,
+                storage: window.localStorage,
+                storageKey: 'clearbalance-auth',
+                flowType: 'pkce'
+            }
+        });
 
         // Global State
         let currentUser = null;
@@ -950,15 +959,50 @@
             setupEventListeners();
         }
 
-        // Authentication
+        // Authentication with retry and loop prevention
         async function checkAuth() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = 'https://clearbalance.xyz';
-                return;
+            // Check if we just navigated here from landing
+            const navigatingFromLanding = sessionStorage.getItem('navigating-to-dashboard');
+            if (navigatingFromLanding) {
+                sessionStorage.removeItem('navigating-to-dashboard');
             }
-            currentUser = session.user;
-            updateProfileAvatar();
+
+            // Prevent redirect loop - check if we already tried
+            const redirectAttempts = parseInt(sessionStorage.getItem('auth-redirect-attempts') || '0');
+            
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
+                if (error) {
+                    console.error('Auth error:', error);
+                    throw error;
+                }
+
+                if (!session) {
+                    // No session - redirect to landing
+                    if (redirectAttempts < 3) {
+                        sessionStorage.setItem('auth-redirect-attempts', (redirectAttempts + 1).toString());
+                        sessionStorage.setItem('from-dashboard', 'true');
+                        window.location.href = 'https://clearbalance.xyz';
+                    } else {
+                        // Too many redirect attempts - show error
+                        console.error('Authentication failed after multiple attempts');
+                        sessionStorage.removeItem('auth-redirect-attempts');
+                        alert('Authentication error. Please try logging in again.');
+                        window.location.href = 'https://clearbalance.xyz';
+                    }
+                    return;
+                }
+
+                // Success - clear redirect attempts
+                sessionStorage.removeItem('auth-redirect-attempts');
+                currentUser = session.user;
+                updateProfileAvatar();
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                sessionStorage.setItem('from-dashboard', 'true');
+                window.location.href = 'https://clearbalance.xyz';
+            }
         }
 
         function updateProfileAvatar() {
@@ -2301,9 +2345,29 @@
         }
 
         async function signOut() {
+            // Clear all session storage
+            sessionStorage.clear();
+            localStorage.removeItem('clearbalance-auth');
+            
             await supabaseClient.auth.signOut();
             window.location.href = 'https://clearbalance.xyz';
         }
+
+        // Listen for auth state changes
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            console.log('Auth state changed:', event);
+            
+            if (event === 'SIGNED_OUT') {
+                sessionStorage.clear();
+                window.location.href = 'https://clearbalance.xyz';
+            } else if (event === 'TOKEN_REFRESHED') {
+                console.log('Token refreshed successfully');
+            } else if (event === 'SIGNED_IN' && !currentUser) {
+                // User just signed in
+                currentUser = session.user;
+                updateProfileAvatar();
+            }
+        });
 
         // Initialize on load
         initApp();
