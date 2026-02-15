@@ -995,11 +995,20 @@
     </div>
 
     <script>
-        // Configure Supabase
+        // Configure Supabase with persistent session
         const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
         const { createClient } = supabase;
-        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true,
+                storage: window.localStorage,
+                storageKey: 'clearbalance-auth',
+                flowType: 'pkce'
+            }
+        });
 
         // Cookie Banner
         const cookieBanner = document.getElementById('cookieBanner');
@@ -1156,9 +1165,27 @@
             }
         });
 
-        // Check if already authenticated
-        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+        // Check if already authenticated - with redirect loop prevention
+        (async function() {
+            // Prevent redirect loop - check if we just came from dashboard
+            const fromDashboard = sessionStorage.getItem('from-dashboard');
+            if (fromDashboard) {
+                sessionStorage.removeItem('from-dashboard');
+                return; // Don't redirect back
+            }
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
+                // Mark that we're going to dashboard
+                sessionStorage.setItem('navigating-to-dashboard', 'true');
+                window.location.href = 'https://dashboard.clearbalance.xyz';
+            }
+        })();
+
+        // Listen for auth state changes
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                sessionStorage.setItem('navigating-to-dashboard', 'true');
                 window.location.href = 'https://dashboard.clearbalance.xyz';
             }
         });
