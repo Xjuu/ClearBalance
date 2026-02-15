@@ -1,18 +1,67 @@
 {
+  "version": 2,
+  "name": "clearbalance",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.json",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
     {
-      "src": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "dashboard.clearbalance.xyz"
-        }
-      ],
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/dashboard",
       "dest": "/dashboard.html"
     },
     {
+      "src": "/privacy.html",
+      "dest": "/privacy.html"
+    },
+    {
+      "src": "/terms.html",
+      "dest": "/terms.html"
+    },
+    {
+      "src": "/cookie_policy.html",
+      "dest": "/cookie_policy.html"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=()"
+        }
+      ]
     }
   ]
 }
