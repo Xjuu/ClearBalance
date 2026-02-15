@@ -1,14 +1,14 @@
 {
   "rewrites": [
     {
-      "source": "/",
+      "source": "/dashboard",
       "has": [
         {
           "type": "host",
           "value": "dashboard.clearbalance.xyz"
         }
       ],
-      "destination": "/dashboard.html"
+      "destination": "/index.html"
     }
   ]
 }
