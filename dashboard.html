@@ -971,37 +971,66 @@
             const redirectAttempts = parseInt(sessionStorage.getItem('auth-redirect-attempts') || '0');
             
             try {
-                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                // First, try to get the session
+                let { data: { session }, error } = await supabaseClient.auth.getSession();
                 
+                // If no session, check if we have a hash/fragment (OAuth callback)
+                if (!session && window.location.hash) {
+                    console.log('Detected OAuth callback, waiting for session...');
+                    // Wait a bit for Supabase to process the OAuth callback
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    const result = await supabaseClient.auth.getSession();
+                    session = result.data.session;
+                    error = result.error;
+                }
+
                 if (error) {
                     console.error('Auth error:', error);
                     throw error;
                 }
 
                 if (!session) {
-                    // No session - redirect to landing
-                    if (redirectAttempts < 3) {
-                        sessionStorage.setItem('auth-redirect-attempts', (redirectAttempts + 1).toString());
-                        sessionStorage.setItem('from-dashboard', 'true');
-                        window.location.href = 'https://clearbalance.xyz';
+                    // No session - but don't redirect immediately if we just got here
+                    if (navigatingFromLanding) {
+                        // Just came from landing page with intent to view dashboard
+                        // Wait a moment for auth to settle
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        const retry = await supabaseClient.auth.getSession();
+                        if (retry.data.session) {
+                            session = retry.data.session;
+                        } else {
+                            throw new Error('No session found after redirect');
+                        }
                     } else {
-                        // Too many redirect attempts - show error
-                        console.error('Authentication failed after multiple attempts');
-                        sessionStorage.removeItem('auth-redirect-attempts');
-                        alert('Authentication error. Please try logging in again.');
-                        window.location.href = 'https://clearbalance.xyz';
+                        throw new Error('No session found');
                     }
-                    return;
                 }
 
                 // Success - clear redirect attempts
                 sessionStorage.removeItem('auth-redirect-attempts');
                 currentUser = session.user;
                 updateProfileAvatar();
+                
+                console.log('Authentication successful:', currentUser.email);
             } catch (error) {
-                console.error('Auth check failed:', error);
-                sessionStorage.setItem('from-dashboard', 'true');
-                window.location.href = 'https://clearbalance.xyz';
+                console.error('Auth check failed:', error.message);
+                
+                // Only redirect if we haven't tried too many times
+                if (redirectAttempts < 2) {
+                    sessionStorage.setItem('auth-redirect-attempts', (redirectAttempts + 1).toString());
+                    sessionStorage.setItem('from-dashboard', 'true');
+                    
+                    // Show user-friendly message
+                    if (confirm('Authentication error. Please try logging in again.\n\nClick OK to go to login page.')) {
+                        window.location.href = 'https://clearbalance.xyz';
+                    }
+                } else {
+                    // Too many attempts - clear everything and force fresh login
+                    sessionStorage.clear();
+                    localStorage.removeItem('clearbalance-auth');
+                    alert('Authentication error. Please try logging in again.');
+                    window.location.href = 'https://clearbalance.xyz';
+                }
             }
         }
 
