@@ -984,9 +984,12 @@
             }
         }
 
-        // Authentication - simplified to prevent false negatives
+        // Authentication - check session exists
         async function checkAuth() {
             try {
+                // Give Supabase time to initialize from localStorage
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
                 
                 if (error) {
@@ -994,20 +997,21 @@
                 }
 
                 if (session) {
-                    // Session exists - we're good!
+                    // Session exists - we're authenticated!
                     currentUser = session.user;
                     updateProfileAvatar();
                     console.log('✓ Authenticated as:', currentUser.email);
                     return true;
                 } else {
-                    // Only redirect if definitely no session
-                    console.log('No session found, redirecting to login');
-                    window.location.href = 'https://clearbalance.xyz';
+                    // Definitely no session - redirect to login
+                    console.log('No session found, redirecting to login in 1 second...');
+                    setTimeout(() => {
+                        window.location.href = 'https://clearbalance.xyz';
+                    }, 1000);
                     return false;
                 }
             } catch (error) {
                 console.error('Auth check exception:', error);
-                // Don't redirect on error, might be temporary
                 return false;
             }
         }
