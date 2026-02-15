@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Debug - ClearBalance</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 2rem;
+            background: #1a1b26;
+            color: #EAEFEF;
+        }
+        .section {
+            background: #24283b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #F44336; }
+        .info { color: #B8CFCE; }
+        button {
+            background: #333446;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.25rem;
+        }
+        button:hover { background: #7F8CAA; }
+        pre {
+            background: #1a1b26;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 ClearBalance Auth Debugger</h1>
+    
+    <div class="section">
+        <h2>Configuration</h2>
+        <p>
+            <strong>Supabase URL:</strong> <span id="supabaseUrl" class="info">Not set</span><br>
+            <strong>Storage Key:</strong> clearbalance-auth
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Session Status</h2>
+        <button onclick="checkSession()">Check Session</button>
+        <button onclick="clearStorage()">Clear Storage</button>
+        <button onclick="testRedirect()">Test Redirect</button>
+        <pre id="sessionStatus">Click "Check Session" to see status</pre>
+    </div>
+
+    <div class="section">
+        <h2>LocalStorage Data</h2>
+        <pre id="storageData">-</pre>
+    </div>
+
+    <div class="section">
+        <h2>SessionStorage Data</h2>
+        <pre id="sessionStorageData">-</pre>
+    </div>
+
+    <div class="section">
+        <h2>Quick Actions</h2>
+        <button onclick="window.location.href='https://clearbalance.xyz'">Go to Landing</button>
+        <button onclick="window.location.href='https://dashboard.clearbalance.xyz'">Go to Dashboard</button>
+        <button onclick="location.reload()">Reload Page</button>
+    </div>
+
+    <script>
+        // USE YOUR ACTUAL CREDENTIALS HERE
+        const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
+
+        document.getElementById('supabaseUrl').textContent = SUPABASE_URL;
+
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true,
+                storage: window.localStorage,
+                storageKey: 'clearbalance-auth',
+                flowType: 'pkce'
+            }
+        });
+
+        async function checkSession() {
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
+                if (error) {
+                    document.getElementById('sessionStatus').innerHTML = 
+                        `<span class="error">ERROR: ${error.message}</span>`;
+                    return;
+                }
+
+                if (session) {
+                    document.getElementById('sessionStatus').innerHTML = 
+                        `<span class="success">✓ SESSION ACTIVE</span>\n\n` +
+                        `User: ${session.user.email}\n` +
+                        `ID: ${session.user.id}\n` +
+                        `Expires: ${new Date(session.expires_at * 1000).toLocaleString()}\n\n` +
+                        JSON.stringify(session.user, null, 2);
+                } else {
+                    document.getElementById('sessionStatus').innerHTML = 
+                        `<span class="error">✗ NO SESSION</span>\n\nUser is not authenticated.`;
+                }
+
+                updateStorageDisplay();
+            } catch (error) {
+                document.getElementById('sessionStatus').innerHTML = 
+                    `<span class="error">EXCEPTION: ${error.message}</span>`;
+            }
+        }
+
+        function updateStorageDisplay() {
+            // LocalStorage
+            const authData = localStorage.getItem('clearbalance-auth');
+            document.getElementById('storageData').textContent = 
+                authData ? JSON.stringify(JSON.parse(authData), null, 2) : 'No auth data in localStorage';
+
+            // SessionStorage
+            const sessionKeys = Object.keys(sessionStorage);
+            const sessionData = {};
+            sessionKeys.forEach(key => {
+                sessionData[key] = sessionStorage.getItem(key);
+            });
+            document.getElementById('sessionStorageData').textContent = 
+                sessionKeys.length > 0 ? JSON.stringify(sessionData, null, 2) : 'No data in sessionStorage';
+        }
+
+        function clearStorage() {
+            if (confirm('Clear all storage and sign out?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                supabaseClient.auth.signOut();
+                alert('Storage cleared and signed out');
+                checkSession();
+            }
+        }
+
+        function testRedirect() {
+            const dest = prompt('Redirect to:\n1 = Landing\n2 = Dashboard\n3 = This page', '1');
+            if (dest === '1') {
+                sessionStorage.setItem('test-redirect', 'to-landing');
+                window.location.href = 'https://clearbalance.xyz';
+            } else if (dest === '2') {
+                sessionStorage.setItem('test-redirect', 'to-dashboard');
+                window.location.href = 'https://dashboard.clearbalance.xyz';
+            } else if (dest === '3') {
+                location.reload();
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            checkSession();
+            setInterval(updateStorageDisplay, 2000); // Update every 2 seconds
+        });
+
+        // Listen for auth changes
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            console.log('Auth event:', event, session);
+            const statusEl = document.getElementById('sessionStatus');
+            statusEl.innerHTML += `\n\n<span class="info">[${new Date().toLocaleTimeString()}] Event: ${event}</span>`;
+        });
+    </script>
+</body>
+</html>
