@@ -1,14 +1,25 @@
 {
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/dashboard",
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "clearbalance.xyz"
+        }
+      ],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/",
       "has": [
         {
           "type": "host",
           "value": "dashboard.clearbalance.xyz"
         }
       ],
-      "destination": "/index.html"
+      "destination": "/dashboard/index.html"
     }
   ]
 }
