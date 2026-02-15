@@ -1,25 +1,18 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
+  "routes": [
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "clearbalance.xyz"
-        }
-      ],
-      "destination": "/index.html"
-    },
-    {
-      "source": "/",
+      "src": "/dashboard",
       "has": [
         {
           "type": "host",
           "value": "dashboard.clearbalance.xyz"
         }
       ],
-      "destination": "/dashboard/index.html"
+      "dest": "/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
