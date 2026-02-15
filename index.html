@@ -1092,27 +1092,45 @@
 
         // OAuth Authentication
         async function signInWithGoogle() {
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: 'https://dashboard.clearbalance.xyz'
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: 'https://dashboard.clearbalance.xyz',
+                        skipBrowserRedirect: false
+                    }
+                });
+                if (error) {
+                    console.error('Google auth error:', error);
+                    alert('Google sign-in error: ' + error.message);
                 }
-            });
-            if (error) console.error('Google auth error:', error);
+            } catch (err) {
+                console.error('Google auth exception:', err);
+                alert('Google sign-in failed. Please try again.');
+            }
         }
 
         async function signInWithGithub() {
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'github',
-                options: {
-                    redirectTo: 'https://dashboard.clearbalance.xyz'
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'github',
+                    options: {
+                        redirectTo: 'https://dashboard.clearbalance.xyz',
+                        skipBrowserRedirect: false
+                    }
+                });
+                if (error) {
+                    console.error('GitHub auth error:', error);
+                    alert('GitHub sign-in error: ' + error.message);
                 }
-            });
-            if (error) console.error('GitHub auth error:', error);
+            } catch (err) {
+                console.error('GitHub auth exception:', err);
+                alert('GitHub sign-in failed. Please try again.');
+            }
         }
 
         document.getElementById('googleAuthBtn').addEventListener('click', signInWithGoogle);
-        document.getElementById('githubAuthBtn').addEventListener('click', signInWithGithub);
+        document.getElementById('githubAuthBtn').addEventListener('click', signInWithGihub);
         document.getElementById('modalGoogleBtn').addEventListener('click', signInWithGoogle);
         document.getElementById('modalGithubBtn').addEventListener('click', signInWithGithub);
 
@@ -1160,7 +1178,15 @@
                 if (error) {
                     alert('Error: ' + error.message);
                 } else {
-                    window.location.href = 'https://dashboard.clearbalance.xyz';
+                    // Verify session was created
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (session) {
+                        // Session confirmed, safe to redirect
+                        sessionStorage.setItem('navigating-to-dashboard', 'true');
+                        window.location.href = 'https://dashboard.clearbalance.xyz';
+                    } else {
+                        alert('Login successful but session not created. Please try again.');
+                    }
                 }
             }
         });
