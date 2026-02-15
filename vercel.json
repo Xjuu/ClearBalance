@@ -2,24 +2,24 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/",
+      "source": "./",
       "has": [
         {
           "type": "host",
           "value": "clearbalance.xyz"
         }
       ],
-      "destination": "/index.html"
+      "destination": "./index.html"
     },
     {
-      "source": "/",
+      "source": "./",
       "has": [
         {
           "type": "host",
           "value": "dashboard.clearbalance.xyz"
         }
       ],
-      "destination": "/dashboard.html"
+      "destination": "./dashboard.html"
     }
   ]
 }
