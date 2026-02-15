@@ -1229,18 +1229,31 @@
             }
         });
 
-        // Check if already logged in and auto-redirect
+        // Check if already logged in (but don't redirect on initial page load)
+        let hasCheckedInitialSession = false;
+        
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            hasCheckedInitialSession = true;
             if (session) {
-                console.log('Session found, redirecting to dashboard');
-                window.location.href = 'https://dashboard.clearbalance.xyz';
+                console.log('Session found on page load, redirecting to dashboard');
+                // Small delay to prevent race conditions
+                setTimeout(() => {
+                    window.location.href = 'https://dashboard.clearbalance.xyz';
+                }, 100);
             }
         });
         
-        // Listen for new sign-ins
+        // Listen for new sign-ins only (not initial session)
         supabaseClient.auth.onAuthStateChange((event, session) => {
             console.log('Auth event:', event);
             
+            // Ignore INITIAL_SESSION event (fired on page load)
+            if (event === 'INITIAL_SESSION') {
+                console.log('Initial session detected, ignoring');
+                return;
+            }
+            
+            // Only redirect on actual SIGNED_IN events
             if (event === 'SIGNED_IN' && session) {
                 console.log('User signed in, redirecting to dashboard');
                 window.location.href = 'https://dashboard.clearbalance.xyz';
