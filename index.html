@@ -995,17 +995,53 @@
     </div>
 
     <script>
-        // Configure Supabase with persistent session
+        // Custom Cookie Storage for cross-subdomain session sharing
+        class CookieStorage {
+            constructor() {
+                this.domain = '.clearbalance.xyz'; // Works on both clearbalance.xyz and dashboard.clearbalance.xyz
+            }
+
+            getItem(key) {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [cookieKey, cookieValue] = cookie.trim().split('=');
+                    if (cookieKey === key) {
+                        try {
+                            return decodeURIComponent(cookieValue);
+                        } catch (e) {
+                            return null;
+                        }
+                    }
+                }
+                return null;
+            }
+
+            setItem(key, value) {
+                const encodedValue = encodeURIComponent(value);
+                const expires = new Date();
+                expires.setDate(expires.getDate() + 7); // 7 day expiry
+                
+                document.cookie = `${key}=${encodedValue}; domain=${this.domain}; path=/; expires=${expires.toUTCString()}; secure; samesite=lax`;
+            }
+
+            removeItem(key) {
+                document.cookie = `${key}=; domain=${this.domain}; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; samesite=lax`;
+            }
+        }
+
+        // Configure Supabase with cookie-based session storage
         const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
         const { createClient } = supabase;
+        const cookieStorage = new CookieStorage();
+        
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: {
                 persistSession: true,
                 autoRefreshToken: true,
                 detectSessionInUrl: true,
-                storage: window.localStorage,
-                storageKey: 'clearbalance-auth',
+                storage: cookieStorage, // Using cookie storage instead of localStorage
+                storageKey: 'cb-auth-token',
                 flowType: 'pkce'
             }
         });
@@ -1193,33 +1229,20 @@
             }
         });
 
-        // Don't auto-redirect to dashboard on page load
-        // User might want to see the landing page even if logged in
-        
-        // Check if user is already logged in and show dashboard link
+        // Check if already logged in and auto-redirect
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             if (session) {
-                // User is logged in - add "Go to Dashboard" button
-                const signInBtn = document.getElementById('signInBtn');
-                const getStartedBtn = document.getElementById('getStartedBtn');
-                
-                if (signInBtn && getStartedBtn) {
-                    signInBtn.textContent = 'Dashboard';
-                    signInBtn.onclick = () => window.location.href = 'https://dashboard.clearbalance.xyz';
-                    
-                    getStartedBtn.textContent = 'Open Dashboard';
-                    getStartedBtn.onclick = () => window.location.href = 'https://dashboard.clearbalance.xyz';
-                }
+                console.log('Session found, redirecting to dashboard');
+                window.location.href = 'https://dashboard.clearbalance.xyz';
             }
         });
         
-        // Listen for auth state changes (actual login events)
+        // Listen for new sign-ins
         supabaseClient.auth.onAuthStateChange((event, session) => {
             console.log('Auth event:', event);
             
-            // Only redirect on SIGNED_IN event (not on initial load)
             if (event === 'SIGNED_IN' && session) {
-                console.log('User just signed in, redirecting to dashboard');
+                console.log('User signed in, redirecting to dashboard');
                 window.location.href = 'https://dashboard.clearbalance.xyz';
             }
         });
