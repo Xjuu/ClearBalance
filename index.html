@@ -941,7 +941,7 @@
         <div class="modal-content">
             <button class="modal-close" id="closeModal">×</button>
             <h2 class="modal-title" id="modalTitle">Welcome back</h2>
-            
+
             <!-- Toggle between Sign In / Sign Up -->
             <div class="type-selector" style="margin-bottom: 2rem;">
                 <div class="type-option selected" data-mode="signin">
@@ -995,56 +995,11 @@
     </div>
 
     <script>
-        // Custom Cookie Storage for cross-subdomain session sharing
-        class CookieStorage {
-            constructor() {
-                this.domain = '.clearbalance.xyz'; // Works on both clearbalance.xyz and dashboard.clearbalance.xyz
-            }
-
-            getItem(key) {
-                const cookies = document.cookie.split(';');
-                for (let cookie of cookies) {
-                    const [cookieKey, cookieValue] = cookie.trim().split('=');
-                    if (cookieKey === key) {
-                        try {
-                            return decodeURIComponent(cookieValue);
-                        } catch (e) {
-                            return null;
-                        }
-                    }
-                }
-                return null;
-            }
-
-            setItem(key, value) {
-                const encodedValue = encodeURIComponent(value);
-                const expires = new Date();
-                expires.setDate(expires.getDate() + 7); // 7 day expiry
-                
-                document.cookie = `${key}=${encodedValue}; domain=${this.domain}; path=/; expires=${expires.toUTCString()}; secure; samesite=lax`;
-            }
-
-            removeItem(key) {
-                document.cookie = `${key}=; domain=${this.domain}; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; samesite=lax`;
-            }
-        }
-
-        // Configure Supabase with cookie-based session storage
+        // Configure Supabase
         const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
         const { createClient } = supabase;
-        const cookieStorage = new CookieStorage();
-        
-        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true,
-                detectSessionInUrl: true,
-                storage: cookieStorage, // Using cookie storage instead of localStorage
-                storageKey: 'cb-auth-token',
-                flowType: 'pkce'
-            }
-        });
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Cookie Banner
         const cookieBanner = document.getElementById('cookieBanner');
@@ -1103,7 +1058,7 @@
                 authModeOptions.forEach(o => o.classList.remove('selected'));
                 this.classList.add('selected');
                 authMode = this.dataset.mode;
-                
+
                 if (authMode === 'signup') {
                     modalTitle.textContent = 'Create Account';
                     confirmPasswordGroup.style.display = 'block';
@@ -1128,45 +1083,29 @@
 
         // OAuth Authentication
         async function signInWithGoogle() {
-            try {
-                const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: 'https://dashboard.clearbalance.xyz',
-                        skipBrowserRedirect: false
-                    }
-                });
-                if (error) {
-                    console.error('Google auth error:', error);
-                    alert('Google sign-in error: ' + error.message);
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin + '/dashboard.html'
+                    redirectTo: 'https://dashboard.clearbalance.xyz'
                 }
-            } catch (err) {
-                console.error('Google auth exception:', err);
-                alert('Google sign-in failed. Please try again.');
-            }
+            });
+            if (error) console.error('Google auth error:', error);
         }
 
         async function signInWithGithub() {
-            try {
-                const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                    provider: 'github',
-                    options: {
-                        redirectTo: 'https://dashboard.clearbalance.xyz',
-                        skipBrowserRedirect: false
-                    }
-                });
-                if (error) {
-                    console.error('GitHub auth error:', error);
-                    alert('GitHub sign-in error: ' + error.message);
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'github',
+                options: {
+                    redirectTo: window.location.origin + '/dashboard.html'
+                    redirectTo: 'https://dashboard.clearbalance.xyz'
                 }
-            } catch (err) {
-                console.error('GitHub auth exception:', err);
-                alert('GitHub sign-in failed. Please try again.');
-            }
+            });
+            if (error) console.error('GitHub auth error:', error);
         }
 
         document.getElementById('googleAuthBtn').addEventListener('click', signInWithGoogle);
-        document.getElementById('githubAuthBtn').addEventListener('click', signInWithGithub);
+        document.getElementById('githubAuthBtn').addEventListener('click', signInWithGoogle);
         document.getElementById('modalGoogleBtn').addEventListener('click', signInWithGoogle);
         document.getElementById('modalGithubBtn').addEventListener('click', signInWithGithub);
 
@@ -1193,6 +1132,7 @@
                     email,
                     password,
                     options: {
+                        emailRedirectTo: window.location.origin + '/dashboard.html'
                         emailRedirectTo: 'https://dashboard.clearbalance.xyz'
                     }
                 });
@@ -1214,48 +1154,16 @@
                 if (error) {
                     alert('Error: ' + error.message);
                 } else {
-                    // Give session time to be stored
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    
-                    // Verify session
-                    const { data: { session } } = await supabaseClient.auth.getSession();
-                    if (session) {
-                        console.log('Session created, redirecting to dashboard');
-                        window.location.href = 'https://dashboard.clearbalance.xyz';
-                    } else {
-                        alert('Login successful but session not created. Please try again.');
-                    }
+                    window.location.href = '/dashboard.html';
+                    window.location.href = 'https://dashboard.clearbalance.xyz';
                 }
             }
         });
 
-        // Check if already logged in (but don't redirect on initial page load)
-        let hasCheckedInitialSession = false;
-        
+        // Check if already authenticated
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
-            hasCheckedInitialSession = true;
             if (session) {
-                console.log('Session found on page load, redirecting to dashboard');
-                // Small delay to prevent race conditions
-                setTimeout(() => {
-                    window.location.href = 'https://dashboard.clearbalance.xyz';
-                }, 100);
-            }
-        });
-        
-        // Listen for new sign-ins only (not initial session)
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            console.log('Auth event:', event);
-            
-            // Ignore INITIAL_SESSION event (fired on page load)
-            if (event === 'INITIAL_SESSION') {
-                console.log('Initial session detected, ignoring');
-                return;
-            }
-            
-            // Only redirect on actual SIGNED_IN events
-            if (event === 'SIGNED_IN' && session) {
-                console.log('User signed in, redirecting to dashboard');
+                window.location.href = '/dashboard.html';
                 window.location.href = 'https://dashboard.clearbalance.xyz';
             }
         });
