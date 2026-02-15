@@ -16,6 +16,16 @@
   "rewrites": [
     {
       "source": "/",
+      "destination": "/dashboard.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "dashboard.clearbalance.xyz"
+        }
+      ]
+    },
+    {
+      "source": "/",
       "destination": "/dashboard.html"
     },
     {
@@ -46,6 +56,10 @@
         {
           "key": "Permissions-Policy",
           "value": "geolocation=(), microphone=(), camera=()"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         }
       ]
     }
