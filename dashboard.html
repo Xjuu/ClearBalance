@@ -808,8 +808,8 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
         <div class="card">
           <div style="overflow-x:auto">
             <table class="data-table">
-              <thead><tr><th>Asset</th><th>Type</th><th>Qty</th><th>Purchase Price</th><th>Current Value</th><th>Gain/Loss</th><th style="text-align:right">Actions</th></tr></thead>
-              <tbody id="portfolioBody"><tr><td colspan="7" class="loading-overlay"><div class="spinner"></div></td></tr></tbody>
+              <thead><tr><th>Asset</th><th>Type</th><th>Qty</th><th>Buy Price</th><th>Current Price</th><th>Total Value</th><th>Gain/Loss</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody id="portfolioBody"><tr><td colspan="8" class="loading-overlay"><div class="spinner"></div></td></tr></tbody>
             </table>
           </div>
         </div>
@@ -1257,7 +1257,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
       </div>
       <div class="form-group" id="assetTickerGroup">
         <label class="form-label">Ticker Symbol</label>
-        <input class="form-input" id="assetTicker" placeholder="e.g. AAPL" style="text-transform:uppercase">
+        <input class="form-input" id="assetTicker" placeholder="e.g. AAPL" style="text-transform:uppercase" onblur="fetchAssetPrice()">
       </div>
     </div>
     <div class="form-row">
@@ -1266,15 +1266,23 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
         <input class="form-input" id="assetQty" type="number" step="any" placeholder="10">
       </div>
       <div class="form-group">
-        <label class="form-label">Purchase Price (per unit)</label>
-        <input class="form-input" id="assetBuyPrice" type="number" step="0.01" placeholder="150.00">
+        <label class="form-label">Purchase Date</label>
+        <input class="form-input" id="assetDate" type="date" onchange="fetchAssetPrice()">
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Purchase Date</label>
-        <input class="form-input" id="assetDate" type="date">
+    <!-- Price preview (auto-fetched) -->
+    <div id="assetPricePreview" style="display:none;background:var(--bg3);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.82rem">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="color:var(--text3);font-weight:600">📡 Purchase price on that date</span>
+        <span id="assetPriceFetched" style="font-weight:800;font-size:.95rem"></span>
       </div>
+      <div id="assetPriceNote" style="color:var(--text3);font-size:.72rem;margin-top:3px"></div>
+    </div>
+    <div id="assetPriceFetching" style="display:none;background:var(--bg3);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.82rem;color:var(--text3)">
+      <span class="spinner" style="width:12px;height:12px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:8px"></span> Looking up price on Yahoo Finance...
+    </div>
+    <input type="hidden" id="assetBuyPrice">
+    <div class="form-row" id="assetManualRow">
       <div class="form-group" id="assetManualGroup" style="display:none">
         <label class="form-label">Current Value (manual)</label>
         <input class="form-input" id="assetManual" type="number" step="0.01" placeholder="Current market value">
@@ -2223,15 +2231,72 @@ async function deletePiggy(id) {
 
 // ======= PORTFOLIO =======
 let allocChart, typeChart;
+const STOCK_FN = 'https://myapdqurgspzlhmutkeq.supabase.co/functions/v1/stock-price';
+
+// Fetch current OR historical price for a ticker
+async function fetchStockPrice(ticker, date = null) {
+  const params = new URLSearchParams({ ticker });
+  if (date) params.set('date', date);
+  const res = await fetch(`${STOCK_FN}?${params}`);
+  if (!res.ok) return null;
+  return await res.json();
+}
+
+// Auto-fetch price preview in the asset modal
+async function fetchAssetPrice() {
+  const ticker = document.getElementById('assetTicker').value.trim().toUpperCase();
+  const date = document.getElementById('assetDate').value;
+  const type = document.getElementById('assetTypeGroup').value;
+
+  // Property doesn't have a ticker
+  if (type === 'property' || !ticker || !date) return;
+
+  document.getElementById('assetPricePreview').style.display = 'none';
+  document.getElementById('assetPriceFetching').style.display = 'block';
+  document.getElementById('assetBuyPrice').value = '';
+
+  const data = await fetchStockPrice(ticker, date);
+  document.getElementById('assetPriceFetching').style.display = 'none';
+
+  if (data && data.price) {
+    document.getElementById('assetBuyPrice').value = data.price;
+    document.getElementById('assetPriceFetched').textContent = fmt(data.price);
+    document.getElementById('assetPriceNote').textContent =
+      `${data.name || ticker} · closest trading day: ${data.date || date}`;
+    document.getElementById('assetPricePreview').style.display = 'block';
+    // Auto-fill name if empty
+    if (!document.getElementById('assetName').value.trim() && data.name) {
+      document.getElementById('assetName').value = data.name;
+    }
+  } else {
+    toast(`Couldn't fetch price for ${ticker} — check the ticker symbol`, 'error');
+  }
+}
 
 async function loadPortfolio() {
   const { data } = await sb.from('assets').select('*').eq('user_id', USER.id).order('created_at');
   const assets = data || [];
 
+  // Fetch current prices for all tickered assets in parallel
+  const priceMap = {};
+  await Promise.all(
+    assets
+      .filter(a => a.ticker && a.type !== 'property')
+      .map(async a => {
+        const d = await fetchStockPrice(a.ticker);
+        if (d && d.price) priceMap[a.ticker] = { price: d.price, change: d.change };
+      })
+  );
+
   let totalValue = 0, totalCost = 0;
   assets.forEach(a => {
-    const val = parseFloat(a.manual_value || 0) || parseFloat(a.quantity) * parseFloat(a.purchase_price);
-    const cost = parseFloat(a.quantity) * parseFloat(a.purchase_price);
+    const buyPerUnit = parseFloat(a.purchase_price) || 0;
+    const qty = parseFloat(a.quantity) || 1;
+    const cost = qty * buyPerUnit;
+    const currentPerUnit = (a.ticker && priceMap[a.ticker])
+      ? priceMap[a.ticker].price
+      : (parseFloat(a.manual_value) || buyPerUnit);
+    const val = qty * currentPerUnit;
     totalValue += val; totalCost += cost;
   });
 
@@ -2243,24 +2308,35 @@ async function loadPortfolio() {
 
   const tbody = document.getElementById('portfolioBody');
   if (!assets.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📈</div><div class="empty-title">No assets yet</div><div class="empty-desc">Add stocks, ETFs, crypto or property</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📈</div><div class="empty-title">No assets yet</div><div class="empty-desc">Add stocks, ETFs, crypto or property — prices are fetched automatically</div></div></td></tr>`;
   } else {
     tbody.innerHTML = assets.map(a => {
-      const val = parseFloat(a.manual_value||0) || parseFloat(a.quantity)*parseFloat(a.purchase_price);
-      const cost = parseFloat(a.quantity)*parseFloat(a.purchase_price);
-      const g = val - cost; const gPct = ((g/cost)*100).toFixed(2);
+      const qty = parseFloat(a.quantity) || 1;
+      const buyPerUnit = parseFloat(a.purchase_price) || 0;
+      const cost = qty * buyPerUnit;
+      const liveData = a.ticker ? priceMap[a.ticker] : null;
+      const currentPerUnit = liveData
+        ? liveData.price
+        : (parseFloat(a.manual_value) || buyPerUnit);
+      const val = qty * currentPerUnit;
+      const g = val - cost;
+      const gPct = cost > 0 ? ((g / cost) * 100).toFixed(2) : '0.00';
+      const changeTag = liveData && liveData.change != null
+        ? `<span style="font-size:.68rem;color:${liveData.change>=0?'var(--green)':'var(--red)'}">${liveData.change>=0?'▲':'▼'}${Math.abs(liveData.change)}%</span>`
+        : (a.type === 'property' ? '<span style="font-size:.68rem;color:var(--text3)">manual</span>' : '<span style="font-size:.68rem;color:var(--text3)">—</span>');
+
       return `
         <tr>
           <td><div class="asset-table-ticker">
             <div><div class="ticker-symbol">${a.name}</div>${a.ticker?`<div class="ticker-name">${a.ticker}</div>`:''}</div>
           </div></td>
           <td><span class="badge tb-${a.type}">${a.type}</span></td>
-          <td style="color:var(--text3)">${a.quantity}</td>
-          <td>${fmt(a.purchase_price)}</td>
+          <td style="color:var(--text3)">${qty}</td>
+          <td style="color:var(--text3)">${fmt(buyPerUnit)}</td>
+          <td style="font-weight:700">${fmt(currentPerUnit)} ${changeTag}</td>
           <td style="font-weight:700">${fmt(val)}</td>
-          <td style="font-weight:600;color:${g>=0?'var(--green)':'var(--red)'}">${g>=0?'+':''}${fmt(g)} (${gPct}%)</td>
+          <td style="font-weight:600;color:${g>=0?'var(--green)':'var(--red)'}">${g>=0?'+':''}${fmt(g)} <span style="font-size:.72rem">(${gPct}%)</span></td>
           <td class="actions">
-            <button class="btn btn-ghost btn-sm btn-icon" onclick="editAsset('${a.id}')">✎</button>
             <button class="btn btn-danger btn-sm btn-icon" onclick="deleteAsset('${a.id}')">✕</button>
           </td>
         </tr>`;
@@ -2270,9 +2346,14 @@ async function loadPortfolio() {
   // Charts
   const byName = {}, byType = {stock:0,etf:0,crypto:0,property:0};
   assets.forEach(a => {
-    const val = parseFloat(a.manual_value||0)||parseFloat(a.quantity)*parseFloat(a.purchase_price);
-    byName[a.name] = (byName[a.name]||0) + val;
-    byType[a.type] = (byType[a.type]||0) + val;
+    const qty = parseFloat(a.quantity) || 1;
+    const liveData = a.ticker ? priceMap[a.ticker] : null;
+    const currentPerUnit = liveData
+      ? liveData.price
+      : (parseFloat(a.manual_value) || parseFloat(a.purchase_price) || 0);
+    const val = qty * currentPerUnit;
+    byName[a.name] = (byName[a.name] || 0) + val;
+    byType[a.type] = (byType[a.type] || 0) + val;
   });
 
   const aOpts = {
@@ -2309,24 +2390,50 @@ async function loadPortfolio() {
 
 async function saveAsset() {
   const id = document.getElementById('assetId').value;
-  const data = {
-    user_id: USER.id,
-    type: document.getElementById('assetTypeGroup').value,
-    name: document.getElementById('assetName').value.trim(),
-    ticker: document.getElementById('assetTicker').value.trim().toUpperCase() || null,
-    quantity: parseFloat(document.getElementById('assetQty').value) || 1,
-    purchase_price: parseFloat(document.getElementById('assetBuyPrice').value),
-    purchase_date: document.getElementById('assetDate').value,
-    manual_value: parseFloat(document.getElementById('assetManual').value) || null,
-    notes: document.getElementById('assetNotes').value.trim() || null,
-  };
-  if (!data.name || !data.purchase_price) { toast('Please fill required fields', 'error'); return; }
+  const type = document.getElementById('assetTypeGroup').value;
+  const ticker = document.getElementById('assetTicker').value.trim().toUpperCase() || null;
+  const name = document.getElementById('assetName').value.trim();
+  const qty = parseFloat(document.getElementById('assetQty').value) || 1;
+  const date = document.getElementById('assetDate').value;
+  const notes = document.getElementById('assetNotes').value.trim() || null;
+  const manual = parseFloat(document.getElementById('assetManual').value) || null;
 
-  const { error } = id ? await sb.from('assets').update(data).eq('id', id) : await sb.from('assets').insert(data);
+  if (!name || !date) { toast('Please fill name and purchase date', 'error'); return; }
+  if (type !== 'property' && !ticker) { toast('Please enter a ticker symbol', 'error'); return; }
+
+  // Get price from hidden field (auto-fetched) or fetch now
+  let purchase_price = parseFloat(document.getElementById('assetBuyPrice').value);
+  if (!purchase_price && type !== 'property') {
+    toast('Fetching price...', 'info');
+    const priceData = await fetchStockPrice(ticker, date);
+    if (!priceData || !priceData.price) {
+      toast(`Couldn't find price for ${ticker} on ${date}. Check the ticker symbol.`, 'error');
+      return;
+    }
+    purchase_price = priceData.price;
+  } else if (!purchase_price && type === 'property') {
+    purchase_price = manual || 0;
+  }
+
+  const data = {
+    user_id: USER.id, type, name, ticker,
+    quantity: qty,
+    purchase_price,
+    purchase_date: date,
+    manual_value: manual,
+    notes,
+  };
+
+  const { error } = id
+    ? await sb.from('assets').update(data).eq('id', id)
+    : await sb.from('assets').insert(data);
+
   if (error) { toast(error.message, 'error'); return; }
   toast('Asset saved!', 'success');
   closeModal('assetModal');
   document.getElementById('assetId').value = '';
+  document.getElementById('assetBuyPrice').value = '';
+  document.getElementById('assetPricePreview').style.display = 'none';
   loadPortfolio();
 }
 
@@ -2346,6 +2453,10 @@ function toggleAssetFields(type) {
   const showTicker = type !== 'property';
   document.getElementById('assetManualGroup').style.display = showManual ? 'block' : 'none';
   document.getElementById('assetTickerGroup').style.display = showTicker ? 'block' : 'none';
+  // Reset price preview when type changes
+  document.getElementById('assetPricePreview').style.display = 'none';
+  document.getElementById('assetPriceFetching').style.display = 'none';
+  document.getElementById('assetBuyPrice').value = '';
 }
 
 // ======= ANALYTICS =======
