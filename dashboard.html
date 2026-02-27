@@ -31,6 +31,8 @@
   --yellow:#fbbf24;
   --blue:#60a5fa;
   --purple:#a78bfa;
+  --accent-glow:rgba(127,140,170,0.2);
+  --card-shine:linear-gradient(135deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0) 60%);
 }
 [data-theme="light"] {
   --bg:#f0f2f5;
@@ -369,6 +371,104 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
   .topbar{padding:0 16px}
 }
 
+/* ======= RIPPLE ======= */
+.btn{position:relative;overflow:hidden}
+.ripple{position:absolute;border-radius:50%;transform:scale(0);animation:ripple-anim .55s linear;background:rgba(255,255,255,0.18);pointer-events:none}
+@keyframes ripple-anim{to{transform:scale(4);opacity:0}}
+
+/* ======= STAT CARD UPGRADES ======= */
+.stat-card{transition:transform .2s,box-shadow .2s,border-color .2s;cursor:default}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.35),0 0 0 1px rgba(127,140,170,.25)}
+.stat-card::after{content:'';position:absolute;inset:0;background:var(--card-shine);pointer-events:none;border-radius:var(--radius)}
+.stat-value{transition:color .3s}
+.count-up{animation:none}
+
+/* ======= TOPBAR EXTRAS ======= */
+.mode-pill{display:flex;background:var(--bg3);border-radius:20px;padding:3px;gap:2px;border:1px solid var(--border)}
+.mode-pill button{padding:5px 14px;border-radius:16px;border:none;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;background:none;color:var(--text3);font-family:inherit}
+.mode-pill button.active{background:linear-gradient(135deg,#7F8CAA,#B8CFCE);color:#0d0e14;box-shadow:0 2px 8px rgba(127,140,170,.3)}
+.topbar-clock{font-size:.78rem;font-weight:600;color:var(--text3);font-variant-numeric:tabular-nums;letter-spacing:.03em;white-space:nowrap}
+.month-bar-wrap{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--border2)}
+.month-bar-fill{height:100%;background:linear-gradient(90deg,#7F8CAA,#B8CFCE);transition:width 1s ease}
+
+/* ======= GREETING ======= */
+.greeting-band{
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 24px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+.greeting-band::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:180px;height:180px;
+  background:radial-gradient(circle,rgba(127,140,170,.12),transparent 70%);
+  border-radius:50%;
+}
+.greeting-name{font-size:1.15rem;font-weight:800;margin-bottom:2px}
+.greeting-sub{font-size:.8rem;color:var(--text3)}
+.greeting-badge{display:flex;align-items:center;gap:8px}
+.streak-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:var(--yellow);padding:5px 12px;border-radius:20px;font-size:.75rem;font-weight:700}
+.saverate-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);color:var(--green);padding:5px 12px;border-radius:20px;font-size:.75rem;font-weight:700}
+.burnwarn-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:var(--red);padding:5px 12px;border-radius:20px;font-size:.75rem;font-weight:700}
+
+/* ======= BUSINESS MODE LABEL ======= */
+.biz-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.2);padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-left:8px;vertical-align:middle}
+
+/* ======= COMMAND PALETTE ======= */
+.cmd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);z-index:3000;display:flex;align-items:flex-start;justify-content:center;padding-top:15vh;opacity:0;pointer-events:none;transition:opacity .2s}
+.cmd-overlay.open{opacity:1;pointer-events:all}
+.cmd-box{background:var(--bg2);border:1px solid rgba(127,140,170,.3);border-radius:16px;width:560px;max-width:92vw;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6);transform:scale(.95);transition:transform .2s}
+.cmd-overlay.open .cmd-box{transform:scale(1)}
+.cmd-input-wrap{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.cmd-input-icon{font-size:1.1rem;color:var(--text3)}
+.cmd-input{flex:1;background:none;border:none;outline:none;font-size:1rem;color:var(--text);font-family:inherit}
+.cmd-input::placeholder{color:var(--text3)}
+.cmd-results{max-height:360px;overflow-y:auto}
+.cmd-section-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:10px 20px 4px}
+.cmd-item{display:flex;align-items:center;gap:12px;padding:11px 20px;cursor:pointer;transition:background .12s}
+.cmd-item:hover,.cmd-item.selected{background:var(--bg3)}
+.cmd-item-icon{width:32px;height:32px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.cmd-item:hover .cmd-item-icon,.cmd-item.selected .cmd-item-icon{background:rgba(127,140,170,.2)}
+.cmd-item-label{font-size:.88rem;font-weight:500;flex:1}
+.cmd-item-shortcut{font-size:.72rem;color:var(--text3);background:var(--bg3);padding:2px 6px;border-radius:5px;font-family:monospace}
+.cmd-footer{padding:10px 20px;border-top:1px solid var(--border);display:flex;gap:16px;font-size:.72rem;color:var(--text3)}
+.cmd-footer kbd{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:.72rem}
+
+/* ======= QUICK AMOUNT CHIPS ======= */
+.quick-amounts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.qa-chip{padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:700;cursor:pointer;background:var(--bg3);border:1px solid var(--border);color:var(--text2);transition:all .15s;font-family:inherit}
+.qa-chip:hover{background:rgba(127,140,170,.2);border-color:rgba(127,140,170,.4);color:var(--text)}
+
+/* ======= COPY TO CLIPBOARD ======= */
+.copy-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text3);padding:3px 8px;font-size:.7rem;cursor:pointer;transition:all .15s;font-family:inherit}
+.copy-btn:hover{background:var(--bg3);color:var(--text)}
+.copy-btn.copied{color:var(--green);border-color:rgba(74,222,128,.3)}
+
+/* ======= CONFETTI ======= */
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:9999;display:none}
+
+/* ======= EXPORT BTN ======= */
+.tx-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* ======= BUSINESS SPECIFIC ======= */
+.biz-only{display:none}
+body.biz-mode .biz-only{display:block}
+body.biz-mode .personal-only{display:none}
+.personal-only{display:block}
+.tax-reserve-card{background:linear-gradient(135deg,rgba(96,165,250,.08),rgba(167,139,250,.08));border:1px solid rgba(96,165,250,.15)}
+
+/* ======= NAV GLOW ======= */
+.nav-item.active{text-shadow:0 0 20px rgba(184,207,206,.3)}
+
+/* ======= KEYBOARD SHORTCUT HINTS ======= */
+.kb-hint{font-size:.62rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:monospace;margin-left:auto;display:none}
+.sidebar:not(.collapsed) .nav-item:hover .kb-hint{display:inline-block}
+
+/* ======= SPENDING VELOCITY ======= */
+.velocity-bar{height:8px;border-radius:10px;background:var(--bg3);overflow:hidden;margin-top:8px}
+.velocity-fill{height:100%;border-radius:10px;transition:width .8s ease}
+
 /* ======= FINANCIAL HEALTH SCORE ======= */
 .health-score{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;position:relative;overflow:hidden}
 .health-score::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(127,140,170,.12),transparent);border-radius:50%}
@@ -393,20 +493,20 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
     <div class="sidebar-section">
       <div class="sidebar-label">Main</div>
       <a class="nav-item active" data-view="overview" onclick="navigate('overview')">
-        <span class="nav-icon">🏠</span><span class="nav-text">Overview</span>
+        <span class="nav-icon">🏠</span><span class="nav-text">Overview</span><span class="kb-hint">G+O</span>
       </a>
       <a class="nav-item" data-view="accounts" onclick="navigate('accounts')">
-        <span class="nav-icon">🏦</span><span class="nav-text">Accounts</span>
+        <span class="nav-icon">🏦</span><span class="nav-text">Accounts</span><span class="kb-hint">G+A</span>
       </a>
     </div>
 
     <div class="sidebar-section">
       <div class="sidebar-label">Money Flow</div>
       <a class="nav-item" data-view="transactions" onclick="navigate('transactions')">
-        <span class="nav-icon">💸</span><span class="nav-text">Transactions</span>
+        <span class="nav-icon">💸</span><span class="nav-text">Transactions</span><span class="kb-hint">G+T</span>
       </a>
       <a class="nav-item" data-view="recurring" onclick="navigate('recurring')">
-        <span class="nav-icon">🔄</span><span class="nav-text">Recurring</span>
+        <span class="nav-icon">🔄</span><span class="nav-text">Recurring</span><span class="kb-hint">G+R</span>
       </a>
       <a class="nav-item" data-view="subscriptions" onclick="navigate('subscriptions')">
         <span class="nav-icon">📦</span><span class="nav-text">Subscriptions</span>
@@ -422,7 +522,11 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
         <span class="nav-icon">🐷</span><span class="nav-text">Piggy Banks</span>
       </a>
       <a class="nav-item" data-view="portfolio" onclick="navigate('portfolio')">
-        <span class="nav-icon">📈</span><span class="nav-text">Portfolio</span>
+        <span class="nav-icon">📈</span><span class="nav-text">Portfolio</span><span class="kb-hint">G+P</span>
+      </a>
+      <!-- Business-only nav -->
+      <a class="nav-item biz-only" data-view="invoices" onclick="navigate('invoices')" style="display:none">
+        <span class="nav-icon">🧾</span><span class="nav-text">Invoices <span class="biz-tag">BIZ</span></span>
       </a>
     </div>
 
@@ -450,9 +554,14 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
   <!-- MAIN -->
   <div class="main">
     <!-- TOPBAR -->
-    <header class="topbar">
+    <header class="topbar" style="position:relative">
       <span class="topbar-title" id="topbarTitle">Overview</span>
       <div class="topbar-actions">
+        <div class="mode-pill">
+          <button id="modePersonalBtn" class="active" onclick="setMode('personal')" title="Personal finance">👤 Personal</button>
+          <button id="modeBusinessBtn" onclick="setMode('business')" title="Business finance">🏢 Business</button>
+        </div>
+        <span class="topbar-clock" id="topbarClock"></span>
         <select class="tb-select" id="globalCurrency" onchange="setCurrency(this.value)" title="Display currency">
           <option value="USD">🇺🇸 USD</option>
           <option value="EUR">🇪🇺 EUR</option>
@@ -467,12 +576,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
           <option value="DKK">🇩🇰 DKK</option>
           <option value="CZK">🇨🇿 CZK</option>
           <option value="HUF">🇭🇺 HUF</option>
-          <option value="RON">🇷🇴 RON</option>
-          <option value="BGN">🇧🇬 BGN</option>
-          <option value="HRK">🇭🇷 HRK</option>
           <option value="TRY">🇹🇷 TRY</option>
-          <option value="RUB">🇷🇺 RUB</option>
-          <option value="UAH">🇺🇦 UAH</option>
           <option value="INR">🇮🇳 INR</option>
           <option value="CNY">🇨🇳 CNY</option>
           <option value="KRW">🇰🇷 KRW</option>
@@ -481,12 +585,16 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
           <option value="NZD">🇳🇿 NZD</option>
           <option value="MXN">🇲🇽 MXN</option>
           <option value="BRL">🇧🇷 BRL</option>
-          <option value="ARS">🇦🇷 ARS</option>
-          <option value="COP">🇨🇴 COP</option>
-          <option value="CLP">🇨🇱 CLP</option>
           <option value="ZAR">🇿🇦 ZAR</option>
-          <option value="EGP">🇪🇬 EGP</option>
           <option value="SAR">🇸🇦 SAR</option>
+          <option value="AED">🇦🇪 AED</option>
+        </select>
+        <button class="tb-btn icon" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+        <button class="tb-btn icon" onclick="openCmd()" title="Command palette (⌘K)" style="font-size:.8rem;letter-spacing:-.02em">⌘K</button>
+        <button class="tb-btn" onclick="signOut()">Sign Out</button>
+      </div>
+      <div class="month-bar-wrap"><div class="month-bar-fill" id="monthBarFill" style="width:0%"></div></div>
+    </header>
           <option value="AED">🇦🇪 AED</option>
           <option value="QAR">🇶🇦 QAR</option>
           <option value="KWD">🇰🇼 KWD</option>
@@ -497,32 +605,30 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
           <option value="PHP">🇵🇭 PHP</option>
           <option value="VND">🇻🇳 VND</option>
           <option value="PKR">🇵🇰 PKR</option>
-          <option value="BDT">🇧🇩 BDT</option>
-          <option value="ILS">🇮🇱 ILS</option>
-          <option value="NGN">🇳🇬 NGN</option>
-          <option value="GHS">🇬🇭 GHS</option>
-          <option value="KES">🇰🇪 KES</option>
-          <option value="MAD">🇲🇦 MAD</option>
-        </select>
-        <button class="tb-btn icon" onclick="toggleTheme()" title="Toggle theme">🌓</button>
-        <button class="tb-btn" onclick="signOut()">Sign Out</button>
-      </div>
-    </header>
-
     <!-- CONTENT -->
     <div class="content" id="content">
 
       <!-- ======= OVERVIEW ======= -->
       <div class="view active" id="view-overview">
+        <!-- Greeting band -->
+        <div class="greeting-band">
+          <div>
+            <div class="greeting-name" id="greetingText">Good morning 👋</div>
+            <div class="greeting-sub" id="greetingSubText">Here's your financial snapshot for today.</div>
+          </div>
+          <div class="greeting-badge" id="greetingBadges"></div>
+        </div>
+
         <div class="quick-actions">
-          <button class="btn btn-primary" onclick="openModal('txModal')">+ Transaction</button>
+          <button class="btn btn-primary" onclick="openModal('txModal')">+ <span id="qa-tx-label">Transaction</span></button>
           <button class="btn btn-ghost" onclick="openModal('accModal')">+ Account</button>
           <button class="btn btn-ghost" onclick="navigate('portfolio')">+ Asset</button>
           <button class="btn btn-ghost" onclick="openModal('debtModal')">+ Debt</button>
           <button class="btn btn-ghost" onclick="openModal('piggyModal')">+ Goal</button>
         </div>
 
-        <div class="grid-4" style="margin-bottom:16px">
+        <!-- Personal mode stats -->
+        <div class="grid-4 personal-only" style="margin-bottom:16px">
           <div class="stat-card">
             <div class="stat-icon" style="background:rgba(74,222,128,.12)">💰</div>
             <div class="stat-label">Net Worth</div>
@@ -539,13 +645,43 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
             <div class="stat-icon" style="background:rgba(248,113,113,.12)">📤</div>
             <div class="stat-label">Expenses (30d)</div>
             <div class="stat-value" id="ov-expenses">—</div>
-            <div class="stat-change" id="ov-expenses-ch"></div>
+            <div class="stat-change" id="ov-expenses-ch">
+              <div class="velocity-bar"><div class="velocity-fill" id="velocityFill"></div></div>
+            </div>
           </div>
           <div class="stat-card">
             <div class="stat-icon" style="background:rgba(167,139,250,.12)">📊</div>
             <div class="stat-label">Portfolio Value</div>
             <div class="stat-value" id="ov-portfolio">—</div>
             <div class="stat-change" id="ov-portfolio-ch"></div>
+          </div>
+        </div>
+
+        <!-- Business mode stats -->
+        <div class="grid-4 biz-only" style="margin-bottom:16px">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(74,222,128,.12)">💹</div>
+            <div class="stat-label">Revenue (30d)</div>
+            <div class="stat-value" id="biz-revenue">—</div>
+            <div class="stat-change" id="biz-revenue-ch"></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(248,113,113,.12)">🏭</div>
+            <div class="stat-label">Costs (30d)</div>
+            <div class="stat-value" id="biz-costs">—</div>
+            <div class="stat-change" id="biz-costs-ch"></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(96,165,250,.12)">📈</div>
+            <div class="stat-label">Profit Margin</div>
+            <div class="stat-value" id="biz-margin">—</div>
+            <div class="stat-change" id="biz-margin-ch"></div>
+          </div>
+          <div class="stat-card tax-reserve-card">
+            <div class="stat-icon" style="background:rgba(96,165,250,.12)">🏛️</div>
+            <div class="stat-label">Tax Reserve (25%)</div>
+            <div class="stat-value" id="biz-tax">—</div>
+            <div class="stat-change" style="color:var(--text3);font-size:.72rem">Set aside from profit</div>
           </div>
         </div>
 
@@ -645,6 +781,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
             <p style="color:var(--text3);font-size:.8rem">Track every movement of money</p>
           </div>
           <button class="btn btn-primary" onclick="openModal('txModal')">+ Add Transaction</button>
+          <button class="btn btn-ghost" onclick="exportTransactionsCSV()" title="Export to CSV">⬇️ Export CSV</button>
         </div>
         <div class="card" style="margin-bottom:16px">
           <div class="card-body" style="padding:14px;display:flex;gap:10px;flex-wrap:wrap">
@@ -980,7 +1117,10 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
     </div>
     <div id="accBusinessFields" style="display:none">
       <div class="form-group">
-        <label class="form-label">IBAN (optional)</label>
+        <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
+          IBAN (optional)
+          <button class="copy-btn" onclick="copyField('accIban')">Copy</button>
+        </label>
         <input class="form-input" id="accIban" placeholder="DE89 3704 0044 0532 0130 00">
       </div>
       <div class="form-row">
@@ -1024,7 +1164,20 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
       </div>
       <div class="form-group">
         <label class="form-label">Amount</label>
-        <input class="form-input" id="txAmount" type="number" step="0.01" placeholder="0.00">
+        <input class="form-input" id="txAmount" type="number" step="0.01" placeholder="0.00" oninput="updateVatPreview()">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount</label>
+      <input class="form-input" id="txAmount" type="number" step="0.01" placeholder="0.00">
+      <div class="quick-amounts">
+        <button class="qa-chip" onclick="setTxAmount(10)">+10</button>
+        <button class="qa-chip" onclick="setTxAmount(25)">+25</button>
+        <button class="qa-chip" onclick="setTxAmount(50)">+50</button>
+        <button class="qa-chip" onclick="setTxAmount(100)">+100</button>
+        <button class="qa-chip" onclick="setTxAmount(250)">+250</button>
+        <button class="qa-chip" onclick="setTxAmount(500)">+500</button>
+        <button class="qa-chip" onclick="setTxAmount(1000)">+1k</button>
       </div>
     </div>
     <div class="form-row">
@@ -1040,6 +1193,28 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
     <div class="form-group">
       <label class="form-label">Description</label>
       <input class="form-input" id="txDesc" placeholder="Optional note">
+    </div>
+    <div class="biz-only">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Invoice # <span style="color:var(--text3);font-weight:400">(optional)</span></label>
+          <input class="form-input" id="txInvoice" placeholder="INV-2025-001">
+        </div>
+        <div class="form-group">
+          <label class="form-label">VAT Rate %</label>
+          <select class="form-select" id="txVat">
+            <option value="0">0% (exempt)</option>
+            <option value="5">5%</option>
+            <option value="8">8%</option>
+            <option value="19">19%</option>
+            <option value="20">20%</option>
+            <option value="21">21%</option>
+            <option value="23">23%</option>
+            <option value="25">25%</option>
+          </select>
+        </div>
+      </div>
+      <div id="txVatPreview" style="display:none;background:var(--bg3);border-radius:8px;padding:10px 14px;font-size:.8rem;margin-bottom:12px;color:var(--text2)"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('txModal')">Cancel</button>
@@ -1337,6 +1512,26 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,sans-ser
   </div>
 </div>
 
+<!-- ======= COMMAND PALETTE ======= -->
+<div class="cmd-overlay" id="cmdOverlay" onclick="closeCmd(event)">
+  <div class="cmd-box" onclick="event.stopPropagation()">
+    <div class="cmd-input-wrap">
+      <span class="cmd-input-icon">🔍</span>
+      <input class="cmd-input" id="cmdInput" placeholder="Search pages, actions…" oninput="filterCmd(this.value)" onkeydown="cmdKeyNav(event)" autocomplete="off">
+      <span style="font-size:.72rem;color:var(--text3)">ESC to close</span>
+    </div>
+    <div class="cmd-results" id="cmdResults"></div>
+    <div class="cmd-footer">
+      <span><kbd>↑↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> select</span>
+      <span><kbd>ESC</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- ======= CONFETTI ======= -->
+<canvas id="confettiCanvas"></canvas>
+
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
@@ -1350,6 +1545,244 @@ let USER = null;
 let PROFILE = null;
 let ACCOUNTS = [];
 let DISPLAY_CURRENCY = localStorage.getItem('cb-currency') || 'USD';
+let BIZ_MODE = localStorage.getItem('cb-mode') === 'business';
+let CMD_IDX = -1;
+
+// ======= MODE SWITCH =======
+function setMode(mode) {
+  BIZ_MODE = mode === 'business';
+  localStorage.setItem('cb-mode', mode);
+  document.body.classList.toggle('biz-mode', BIZ_MODE);
+  document.getElementById('modePersonalBtn').classList.toggle('active', !BIZ_MODE);
+  document.getElementById('modeBusinessBtn').classList.toggle('active', BIZ_MODE);
+  // Show/hide biz-only nav items
+  document.querySelectorAll('.biz-only').forEach(el => {
+    el.style.display = BIZ_MODE ? '' : 'none';
+  });
+  // Update labels
+  document.getElementById('qa-tx-label').textContent = BIZ_MODE ? 'Revenue Entry' : 'Transaction';
+  if (document.getElementById('view-overview').classList.contains('active')) loadOverview();
+  toast(BIZ_MODE ? '🏢 Business mode activated' : '👤 Personal mode activated', 'info');
+}
+
+// ======= CLOCK & MONTH PROGRESS =======
+function startClock() {
+  function tick() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('topbarClock').textContent = `${h}:${m}`;
+    // Month progress
+    const dayOfMonth = now.getDate();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+    const pct = (dayOfMonth / daysInMonth * 100).toFixed(1);
+    document.getElementById('monthBarFill').style.width = pct + '%';
+    document.getElementById('monthBarFill').title = `${pct}% through ${now.toLocaleString('default',{month:'long'})}`;
+  }
+  tick();
+  setInterval(tick, 30000);
+}
+
+// ======= GREETING =======
+function showGreeting(name) {
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const emoji = h < 12 ? '☀️' : h < 17 ? '👋' : '🌙';
+  const first = (name || 'there').split(' ')[0];
+  document.getElementById('greetingText').textContent = `${greet}, ${first} ${emoji}`;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = new Date();
+  document.getElementById('greetingSubText').textContent =
+    `${days[today.getDay()]}, ${today.toLocaleDateString('default',{month:'long',day:'numeric',year:'numeric'})}`;
+}
+
+// ======= GREETING BADGES (savings rate / burn warning) =======
+function renderGreetingBadges(income, expenses) {
+  const container = document.getElementById('greetingBadges');
+  const parts = [];
+  if (income > 0) {
+    const rate = ((income - expenses) / income * 100);
+    if (rate >= 0) {
+      parts.push(`<span class="saverate-pill">💚 ${rate.toFixed(0)}% saved</span>`);
+    } else {
+      const overpct = Math.abs(rate).toFixed(0);
+      parts.push(`<span class="burnwarn-pill">🔥 Spending ${overpct}% over income</span>`);
+    }
+  }
+  container.innerHTML = parts.join('');
+}
+
+// ======= QUICK AMOUNT CHIPS =======
+function setTxAmount(val) {
+  const cur = parseFloat(document.getElementById('txAmount').value) || 0;
+  document.getElementById('txAmount').value = (cur + val).toFixed(2);
+}
+
+// ======= VAT PREVIEW =======
+function updateVatPreview() {
+  const amt = parseFloat(document.getElementById('txAmount').value) || 0;
+  const vat = parseFloat(document.getElementById('txVat')?.value) || 0;
+  const prev = document.getElementById('txVatPreview');
+  if (!prev) return;
+  if (vat > 0 && amt > 0 && BIZ_MODE) {
+    const vatAmt = (amt * vat / 100).toFixed(2);
+    const net = (amt - parseFloat(vatAmt)).toFixed(2);
+    prev.style.display = 'block';
+    prev.innerHTML = `Net: <strong>${fmt(parseFloat(net))}</strong> · VAT ${vat}%: <strong>${fmt(parseFloat(vatAmt))}</strong> · Total: <strong>${fmt(amt)}</strong>`;
+  } else {
+    prev.style.display = 'none';
+  }
+}
+
+// ======= CSV EXPORT =======
+async function exportTransactionsCSV() {
+  const { data } = await sb.from('transactions').select('*, accounts(name)').eq('user_id', USER.id).order('date',{ascending:false});
+  if (!data || !data.length) { toast('No transactions to export', 'info'); return; }
+  const rows = [['Date','Description','Category','Type','Amount','Account']];
+  data.forEach(t => rows.push([t.date, `"${(t.description||'').replace(/"/g,'""')}"`, t.category, t.type, t.amount, t.accounts?.name || '']));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `clearbalance-transactions-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('CSV exported!', 'success');
+}
+
+// ======= COPY TO CLIPBOARD =======
+async function copyField(inputId) {
+  const val = document.getElementById(inputId)?.value;
+  if (!val) { toast('Nothing to copy', 'info'); return; }
+  await navigator.clipboard.writeText(val);
+  const btn = event.target;
+  btn.textContent = 'Copied!'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  toast('Copied to clipboard!', 'success');
+}
+
+// ======= RIPPLE EFFECT =======
+function addRipple(e) {
+  const btn = e.currentTarget;
+  const r = document.createElement('span');
+  r.classList.add('ripple');
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  btn.appendChild(r);
+  setTimeout(() => r.remove(), 600);
+}
+
+// ======= CONFETTI =======
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const pieces = Array.from({length:120}, () => ({
+    x: Math.random()*canvas.width, y: -10,
+    r: 5+Math.random()*6, color: ['#7F8CAA','#B8CFCE','#4ade80','#60a5fa','#fbbf24','#a78bfa','#f87171'][Math.floor(Math.random()*7)],
+    speed: 2+Math.random()*4, drift: (Math.random()-.5)*2, rot: Math.random()*360, rotSpeed: (Math.random()-.5)*5,
+  }));
+  let done = 0;
+  function frame() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      p.y += p.speed; p.x += p.drift; p.rot += p.rotSpeed;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);
+      ctx.restore();
+      if (p.y > canvas.height) done++;
+    });
+    if (done < pieces.length) requestAnimationFrame(frame);
+    else { canvas.style.display='none'; ctx.clearRect(0,0,canvas.width,canvas.height); done=0; }
+  }
+  requestAnimationFrame(frame);
+}
+
+// ======= COMMAND PALETTE =======
+const CMD_COMMANDS = [
+  {label:'Go to Overview',icon:'🏠',action:()=>navigate('overview'),shortcut:'G+O'},
+  {label:'Go to Accounts',icon:'🏦',action:()=>navigate('accounts'),shortcut:'G+A'},
+  {label:'Go to Transactions',icon:'💸',action:()=>navigate('transactions'),shortcut:'G+T'},
+  {label:'Go to Recurring',icon:'🔄',action:()=>navigate('recurring')},
+  {label:'Go to Subscriptions',icon:'📦',action:()=>navigate('subscriptions')},
+  {label:'Go to Debts',icon:'📉',action:()=>navigate('debts')},
+  {label:'Go to Piggy Banks',icon:'🐷',action:()=>navigate('piggy')},
+  {label:'Go to Portfolio',icon:'📈',action:()=>navigate('portfolio'),shortcut:'G+P'},
+  {label:'Go to Analytics',icon:'🔬',action:()=>navigate('analytics')},
+  {label:'Go to Settings',icon:'⚙️',action:()=>navigate('settings')},
+  {label:'New Transaction',icon:'➕',action:()=>openModal('txModal'),shortcut:'N+T'},
+  {label:'New Account',icon:'🏦',action:()=>openModal('accModal'),shortcut:'N+A'},
+  {label:'New Debt',icon:'📉',action:()=>openModal('debtModal')},
+  {label:'New Savings Goal',icon:'🐷',action:()=>openModal('piggyModal')},
+  {label:'Export Transactions CSV',icon:'⬇️',action:exportTransactionsCSV},
+  {label:'Toggle Dark / Light',icon:'🌓',action:toggleTheme},
+  {label:'Switch to Personal Mode',icon:'👤',action:()=>setMode('personal')},
+  {label:'Switch to Business Mode',icon:'🏢',action:()=>setMode('business')},
+  {label:'Sign Out',icon:'👋',action:signOut},
+];
+
+let cmdFiltered = CMD_COMMANDS;
+function openCmd() {
+  document.getElementById('cmdOverlay').classList.add('open');
+  document.getElementById('cmdInput').value = '';
+  CMD_IDX = -1; filterCmd('');
+  setTimeout(() => document.getElementById('cmdInput').focus(), 50);
+}
+function closeCmd(e) {
+  if (!e || e.target === document.getElementById('cmdOverlay')) {
+    document.getElementById('cmdOverlay').classList.remove('open');
+  }
+}
+function filterCmd(q) {
+  q = q.toLowerCase();
+  cmdFiltered = q ? CMD_COMMANDS.filter(c => c.label.toLowerCase().includes(q)) : CMD_COMMANDS;
+  CMD_IDX = -1;
+  renderCmdResults();
+}
+function renderCmdResults() {
+  const el = document.getElementById('cmdResults');
+  if (!cmdFiltered.length) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:.85rem">No results</div>'; return; }
+  el.innerHTML = cmdFiltered.map((c,i) => `
+    <div class="cmd-item ${i===CMD_IDX?'selected':''}" onclick="runCmd(${i})">
+      <div class="cmd-item-icon">${c.icon}</div>
+      <span class="cmd-item-label">${c.label}</span>
+      ${c.shortcut?`<span class="cmd-item-shortcut">${c.shortcut}</span>`:''}
+    </div>`).join('');
+}
+function runCmd(i) {
+  closeCmd();
+  cmdFiltered[i]?.action?.();
+}
+function cmdKeyNav(e) {
+  if (e.key === 'ArrowDown') { CMD_IDX = Math.min(CMD_IDX+1, cmdFiltered.length-1); renderCmdResults(); e.preventDefault(); }
+  else if (e.key === 'ArrowUp') { CMD_IDX = Math.max(CMD_IDX-1, 0); renderCmdResults(); e.preventDefault(); }
+  else if (e.key === 'Enter') { if (CMD_IDX >= 0) runCmd(CMD_IDX); else if (cmdFiltered.length) runCmd(0); }
+  else if (e.key === 'Escape') closeCmd();
+}
+
+// ======= KEYBOARD SHORTCUTS =======
+let gPressed = false, nPressed = false;
+document.addEventListener('keydown', e => {
+  // Don't fire if user is typing in an input
+  if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
+  // Cmd+K / Ctrl+K = command palette
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openCmd(); return; }
+  if (e.key === 'Escape') { closeCmd(); document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); }
+  // G+ navigation
+  if (e.key === 'g' || e.key === 'G') { gPressed = true; setTimeout(()=>gPressed=false, 1000); return; }
+  if (gPressed) {
+    const map = { o:'overview', a:'accounts', t:'transactions', r:'recurring', p:'portfolio', s:'settings' };
+    if (map[e.key]) { navigate(map[e.key]); gPressed=false; }
+    return;
+  }
+  // N+ actions
+  if (e.key === 'n' || e.key === 'N') { nPressed = true; setTimeout(()=>nPressed=false, 1000); return; }
+  if (nPressed) {
+    if (e.key === 't') openModal('txModal');
+    if (e.key === 'a') openModal('accModal');
+    nPressed = false;
+  }
+});
 
 // ======= INIT =======
 (async () => {
@@ -1382,6 +1815,13 @@ async function initDashboard() {
   document.documentElement.dataset.theme = savedTheme;
   document.getElementById('darkModeToggle').checked = savedTheme === 'dark';
 
+  // Start clock
+  startClock();
+
+  // Apply saved mode
+  if (BIZ_MODE) setMode('business');
+  else setMode('personal');
+
   // Populate user info
   const displayName = USER.user_metadata?.full_name || USER.email.split('@')[0];
   const avatarUrl = USER.user_metadata?.avatar_url;
@@ -1389,6 +1829,12 @@ async function initDashboard() {
   document.getElementById('sidebarEmail').textContent = USER.email;
   document.getElementById('settingsName').textContent = displayName;
   document.getElementById('settingsEmail').textContent = USER.email;
+
+  // Greeting
+  showGreeting(displayName);
+
+  // Ripple on all buttons
+  document.querySelectorAll('.btn').forEach(btn => btn.addEventListener('click', addRipple));
 
   const initials = displayName.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
   ['sidebarAvatar','settingsAvatar'].forEach(id => {
@@ -1583,9 +2029,37 @@ async function loadOverview() {
   document.getElementById('ov-expenses').textContent = fmt(expenses);
   document.getElementById('ov-portfolio').textContent = fmt(portValue);
 
+  // Business mode stats
+  const profit = income - expenses;
+  const margin = income > 0 ? (profit / income * 100) : 0;
+  const taxReserve = profit > 0 ? profit * 0.25 : 0;
+  if (document.getElementById('biz-revenue')) {
+    document.getElementById('biz-revenue').textContent = fmt(income);
+    document.getElementById('biz-costs').textContent = fmt(expenses);
+    document.getElementById('biz-margin').textContent = margin.toFixed(1) + '%';
+    document.getElementById('biz-margin').style.color = margin >= 0 ? 'var(--green)' : 'var(--red)';
+    document.getElementById('biz-tax').textContent = fmt(taxReserve);
+  }
+
+  // Greeting badges
+  renderGreetingBadges(income, expenses);
+
+  // Spending velocity bar (% of month's budget burned)
+  const now2 = new Date();
+  const dayOfMonth = now2.getDate();
+  const daysInMonth = new Date(now2.getFullYear(), now2.getMonth()+1, 0).getDate();
+  const expectedSpend = income > 0 ? (income / daysInMonth) * dayOfMonth : 0;
+  const velocityPct = expectedSpend > 0 ? Math.min(100, (expenses / expectedSpend) * 100) : 50;
+  const vfill = document.getElementById('velocityFill');
+  if (vfill) {
+    vfill.style.width = velocityPct + '%';
+    vfill.style.background = velocityPct > 110 ? 'var(--red)' : velocityPct > 85 ? 'var(--yellow)' : 'var(--green)';
+  }
+
   const net30 = income - expenses;
   const ch = document.getElementById('ov-expenses-ch');
-  ch.textContent = net30 >= 0 ? `+${fmt(net30)} saved` : `${fmt(net30)} deficit`;
+  ch.innerHTML = (net30 >= 0 ? `+${fmt(net30)} saved` : `${fmt(net30)} deficit`) +
+    `<div class="velocity-bar"><div class="velocity-fill" id="velocityFill" style="width:${velocityPct}%;background:${velocityPct>110?'var(--red)':velocityPct>85?'var(--yellow)':'var(--green)'}"></div></div>`;
   ch.className = 'stat-change ' + (net30 >= 0 ? 'up' : 'down');
 
   // Health Score
@@ -2213,11 +2687,16 @@ async function contributeToGoal() {
   const amt = parseFloat(document.getElementById('piggyContribAmt').value);
   if (!amt || amt <= 0) { toast('Enter a positive amount', 'error'); return; }
 
-  const { data: pig } = await sb.from('piggy_banks').select('current_amount').eq('id', id).single();
+  const { data: pig } = await sb.from('piggy_banks').select('current_amount,target_amount,name').eq('id', id).single();
   const newAmt = parseFloat(pig.current_amount) + amt;
   await sb.from('piggy_banks').update({current_amount: newAmt}).eq('id', id);
 
-  toast(`${fmt(amt)} added to goal!`, 'success');
+  if (newAmt >= parseFloat(pig.target_amount)) {
+    toast(`🎉 Goal "${pig.name}" completed!`, 'success');
+    launchConfetti();
+  } else {
+    toast(`${fmt(amt)} added to goal!`, 'success');
+  }
   closeModal('piggyContribModal');
   loadPiggy();
 }
