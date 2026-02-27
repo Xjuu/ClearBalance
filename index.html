@@ -1,1172 +1,637 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClearBalance - Your Financial Operating System</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --primary: #333446;
-            --secondary: #7F8CAA;
-            --accent: #B8CFCE;
-            --light: #EAEFEF;
-            --white: #FFFFFF;
-            --success: #4CAF50;
-            --warning: #FF9800;
-            --error: #F44336;
-            --shadow: rgba(51, 52, 70, 0.1);
-            --shadow-lg: rgba(51, 52, 70, 0.15);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--light);
-            color: var(--primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(234, 239, 239, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 1.5rem 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(127, 140, 170, 0.1);
-            animation: slideDown 0.6s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        nav .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px var(--shadow-lg);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--primary);
-            border: 1.5px solid var(--primary);
-        }
-
-        .btn-ghost:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 12rem 2rem 6rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(184, 207, 206, 0.3), transparent);
-            border-radius: 50%;
-            z-index: -1;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) scale(1);
-            }
-            50% {
-                transform: translateY(-30px) scale(1.05);
-            }
-        }
-
-        .hero h1 {
-            font-size: 4.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-            animation: fadeInUp 0.8s ease 0.2s both;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            color: var(--secondary);
-            margin-bottom: 3rem;
-            font-weight: 300;
-            animation: fadeInUp 0.8s ease 0.4s both;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease 0.6s both;
-        }
-
-        .btn-oauth {
-            padding: 1rem 2rem;
-            border-radius: 14px;
-            border: 2px solid var(--primary);
-            background: white;
-            color: var(--primary);
-            cursor: pointer;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 500;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-oauth:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px var(--shadow-lg);
-        }
-
-        .btn-oauth svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Features Grid */
-        .features {
-            padding: 6rem 2rem;
-            background: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .features::before {
-            content: '';
-            position: absolute;
-            top: -200px;
-            left: -200px;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(127, 140, 170, 0.15), transparent);
-            border-radius: 50%;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 4rem;
-            color: var(--primary);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: var(--light);
-            padding: 2.5rem;
-            border-radius: 20px;
-            transition: all 0.4s ease;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }
-
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px var(--shadow-lg);
-            border-color: var(--accent);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .feature-card p {
-            color: var(--secondary);
-            font-size: 1rem;
-            line-height: 1.7;
-        }
-
-        /* Analytics Preview */
-        .analytics-preview {
-            padding: 6rem 2rem;
-            background: var(--primary);
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .analytics-preview::before {
-            content: '';
-            position: absolute;
-            bottom: -150px;
-            right: -150px;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(184, 207, 206, 0.2), transparent);
-            border-radius: 50%;
-        }
-
-        .analytics-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .analytics-text h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
-
-        .analytics-text p {
-            font-size: 1.125rem;
-            color: var(--accent);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .analytics-visual {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .chart-placeholder {
-            width: 100%;
-            height: 300px;
-            background: linear-gradient(135deg, rgba(184, 207, 206, 0.3), rgba(127, 140, 170, 0.3));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            color: var(--accent);
-        }
-
-        /* Security Section */
-        .security {
-            padding: 6rem 2rem;
-            background: white;
-        }
-
-        .security-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .security-item {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .security-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .security-item h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            color: var(--primary);
-        }
-
-        .security-item p {
-            color: var(--secondary);
-            font-size: 0.95rem;
-        }
-
-        /* Learn More Section */
-        .learn-more {
-            padding: 6rem 2rem;
-            background: var(--light);
-        }
-
-        .expandable {
-            background: white;
-            border-radius: 16px;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            border: 1px solid rgba(127, 140, 170, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .expandable:hover {
-            box-shadow: 0 8px 24px var(--shadow);
-        }
-
-        .expandable-header {
-            padding: 1.5rem 2rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-        }
-
-        .expandable-header h3 {
-            font-size: 1.25rem;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .expandable-icon {
-            font-size: 1.5rem;
-            color: var(--secondary);
-            transition: transform 0.3s ease;
-        }
-
-        .expandable.active .expandable-icon {
-            transform: rotate(180deg);
-        }
-
-        .expandable-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .expandable.active .expandable-content {
-            max-height: 500px;
-        }
-
-        .expandable-inner {
-            padding: 0 2rem 2rem;
-            color: var(--secondary);
-            line-height: 1.8;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--primary);
-            color: white;
-            padding: 4rem 2rem 2rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-brand h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-brand p {
-            color: var(--accent);
-            line-height: 1.7;
-        }
-
-        .footer-links h4 {
-            margin-bottom: 1rem;
-            font-size: 1.125rem;
-        }
-
-        .footer-links a {
-            display: block;
-            color: var(--accent);
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(184, 207, 206, 0.2);
-            color: var(--accent);
-            font-size: 0.9rem;
-        }
-
-        /* Cookie Banner */
-        .cookie-banner {
-            position: fixed;
-            bottom: 2rem;
-            left: 2rem;
-            right: 2rem;
-            max-width: 600px;
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px var(--shadow-lg);
-            z-index: 10000;
-            display: none;
-            animation: slideUp 0.5s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .cookie-banner.show {
-            display: block;
-        }
-
-        .cookie-banner h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            color: var(--primary);
-        }
-
-        .cookie-banner p {
-            color: var(--secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        .cookie-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        /* Auth Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(51, 52, 70, 0.8);
-            backdrop-filter: blur(10px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 2rem;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 3rem;
-            border-radius: 24px;
-            max-width: 450px;
-            width: 100%;
-            position: relative;
-            animation: modalSlide 0.4s ease;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--secondary);
-            transition: color 0.3s ease;
-        }
-
-        .modal-close:hover {
-            color: var(--primary);
-        }
-
-        .modal h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.875rem 1.25rem;
-            border: 2px solid var(--light);
-            border-radius: 12px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(184, 207, 206, 0.1);
-        }
-
-        .divider {
-            text-align: center;
-            margin: 2rem 0;
-            color: var(--secondary);
-            position: relative;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: var(--light);
-        }
-
-        .divider::before {
-            left: 0;
-        }
-
-        .divider::after {
-            right: 0;
-        }
-
-        .oauth-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.125rem;
-            }
-
-            .analytics-content {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-
-            .cookie-banner {
-                left: 1rem;
-                right: 1rem;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClearBalance — Your Financial Operating System</title>
+<meta name="description" content="Unify your accounts, investments, debts, and savings. Built for individuals and businesses who demand financial clarity.">
+<meta property="og:title" content="ClearBalance — Your Financial Operating System">
+<meta property="og:description" content="Multi-currency, multi-language financial platform with portfolio intelligence, debt engine, and business mode.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --c1: #333446;
+  --c2: #7F8CAA;
+  --c3: #B8CFCE;
+  --c4: #EAEFEF;
+  --bg: #0d0e14;
+  --bg2: #13141f;
+  --bg3: #1a1b28;
+  --text: #EAEFEF;
+  --text2: #B8CFCE;
+  --accent: #7F8CAA;
+  --border: rgba(127,140,170,0.15);
+  --glass: rgba(26,27,40,0.8);
+  --radius: 16px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+[data-theme="light"] {
+  --bg: #f4f6f8;
+  --bg2: #ffffff;
+  --bg3: #eaefef;
+  --text: #1a1b28;
+  --text2: #333446;
+  --border: rgba(51,52,70,0.12);
+  --glass: rgba(255,255,255,0.9);
+  --shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 5%;height:72px;display:flex;align-items:center;justify-content:space-between;transition:all .3s}
+nav.scrolled{background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;text-decoration:none;color:var(--text)}
+.nav-logo .logo-mark{width:36px;height:36px;background:linear-gradient(135deg,#7F8CAA,#B8CFCE);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{text-decoration:none;color:var(--text2);font-size:.9rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;border:none}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border);color:var(--text)}
+.btn-primary{background:linear-gradient(135deg,#7F8CAA,#B8CFCE);color:#0d0e14}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(127,140,170,0.4)}
+.nav-theme{background:none;border:1px solid var(--border);color:var(--text2);padding:8px;border-radius:8px;cursor:pointer;font-size:1rem;transition:all .2s}
+.nav-theme:hover{background:var(--border)}
+.nav-lang{background:none;border:1px solid var(--border);color:var(--text2);padding:6px 10px;border-radius:8px;cursor:pointer;font-size:.85rem;transition:all .2s;appearance:none}
+.nav-lang:hover{background:var(--border)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 5% 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(127,140,170,0.12) 0%,transparent 70%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(127,140,170,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(127,140,170,0.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 70% at 50% 0%,black 0%,transparent 80%)}
+.hero-content{position:relative;max-width:820px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(127,140,170,0.1);border:1px solid rgba(127,140,170,0.25);padding:6px 16px;border-radius:100px;font-size:.8rem;font-weight:600;color:var(--c3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:32px}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#B8CFCE;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero h1{font-size:clamp(3rem,8vw,6.5rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:28px;white-space:pre-line}
+.hero h1 span{background:linear-gradient(135deg,#7F8CAA,#B8CFCE,#EAEFEF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(1rem,2.5vw,1.25rem);color:var(--text2);max-width:600px;margin:0 auto 48px;line-height:1.7}
+.hero-cta{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.btn-hero{padding:16px 36px;font-size:1rem;border-radius:14px}
+.hero-sub{font-size:.8rem;color:var(--text2);opacity:.7}
+.hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:80px;padding-top:60px;border-top:1px solid var(--border);flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-num{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#B8CFCE,#EAEFEF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:.8rem;color:var(--text2);margin-top:4px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+
+/* FLOATING CARDS */
+.hero-visual{position:relative;width:100%;max-width:900px;margin:60px auto 0;height:420px}
+.floating-card{position:absolute;background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.fc-main{left:50%;transform:translateX(-50%);top:0;width:400px}
+.fc-portfolio{right:0;top:20px;width:220px;animation:float1 6s ease-in-out infinite}
+.fc-debt{left:0;top:40px;width:210px;animation:float2 7s ease-in-out infinite}
+.fc-savings{left:50%;transform:translateX(-50%);bottom:0;width:280px;animation:float3 5s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes float3{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.fc-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);font-weight:600;margin-bottom:12px}
+.fc-value{font-size:1.8rem;font-weight:800;margin-bottom:4px}
+.fc-change{font-size:.8rem;display:flex;align-items:center;gap:4px}
+.fc-change.up{color:#4ade80}
+.fc-change.down{color:#f87171}
+.mini-chart{height:40px;display:flex;align-items:flex-end;gap:3px;margin-top:12px}
+.mini-bar{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,rgba(127,140,170,0.8),rgba(127,140,170,0.2));min-height:4px;transition:all .3s}
+.asset-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.asset-row:last-child{border:none}
+.asset-ticker{font-weight:700;font-size:.85rem}
+.asset-price{font-size:.8rem;color:var(--text2)}
+.asset-change{font-size:.75rem;padding:2px 6px;border-radius:4px}
+.asset-change.up{background:rgba(74,222,128,.15);color:#4ade80}
+.asset-change.down{background:rgba(248,113,113,.15);color:#f87171}
+.progress-ring{position:relative;display:flex;align-items:center;gap:12px}
+.ring-wrap{position:relative;width:56px;height:56px;flex-shrink:0}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:4}
+.ring-fill{fill:none;stroke:url(#ringGrad);stroke-width:4;stroke-linecap:round;stroke-dasharray:138;stroke-dashoffset:40;transition:stroke-dashoffset .6s ease;transform:rotate(-90deg);transform-origin:50% 50%}
+.ring-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
+.ring-info small{display:block;font-size:.7rem;color:var(--text2)}
+
+/* FEATURES */
+section{padding:100px 5%}
+.section-header{text-align:center;margin-bottom:64px}
+.section-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--c2);font-weight:600;margin-bottom:16px}
+.section-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.02em;margin-bottom:20px}
+.section-subtitle{font-size:1.1rem;color:var(--text2);max-width:560px;margin:0 auto}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;max-width:1100px;margin:0 auto;border:2px solid var(--border);border-radius:20px;overflow:hidden}
+.feature-card{background:var(--bg2);padding:40px 36px;transition:all .3s;position:relative;overflow:hidden}
+.feature-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(127,140,170,.06),transparent);opacity:0;transition:opacity .3s}
+.feature-card:hover::before{opacity:1}
+.feature-card:hover{background:var(--bg3)}
+.feature-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(127,140,170,.2),rgba(184,207,206,.1));display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+.feature-title{font-size:1.1rem;font-weight:700;margin-bottom:10px}
+.feature-desc{font-size:.9rem;color:var(--text2);line-height:1.65}
+
+/* DEEP DIVE */
+.deepdive{padding:100px 5%;background:var(--bg2)}
+.dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1100px;margin:0 auto}
+.dd-grid.reverse{direction:rtl}
+.dd-grid.reverse>*{direction:ltr}
+.dd-visual{background:var(--bg3);border-radius:20px;border:1px solid var(--border);padding:32px;overflow:hidden}
+.dd-content .section-label{text-align:left;display:block}
+.dd-content h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin-bottom:16px;line-height:1.2}
+.dd-content p{color:var(--text2);margin-bottom:24px;line-height:1.7}
+.dd-points{list-style:none;display:flex;flex-direction:column;gap:12px}
+.dd-points li{display:flex;align-items:flex-start;gap:12px;font-size:.9rem}
+.dd-points li::before{content:'✓';width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,rgba(127,140,170,.3),rgba(184,207,206,.2));display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;margin-top:1px;color:#B8CFCE;font-weight:700}
+
+/* AMORTIZATION */
+.amort-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.amort-table th{padding:8px 12px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);border-bottom:1px solid var(--border)}
+.amort-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+.amort-table td:first-child{color:var(--text);font-weight:500}
+.balance-bar{height:4px;background:var(--border);border-radius:2px;margin-top:4px}
+.balance-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#7F8CAA,#B8CFCE)}
+
+/* ALLOCATION CHART */
+.alloc-wrap{display:flex;align-items:center;gap:24px}
+.alloc-donut{position:relative;width:120px;height:120px;flex-shrink:0}
+.alloc-donut svg{transform:rotate(-90deg)}
+.alloc-legend{flex:1}
+.alloc-item{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:.8rem}
+.alloc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-right:8px}
+.alloc-label{display:flex;align-items:center;flex:1;color:var(--text2)}
+.alloc-pct{font-weight:700}
+
+/* SECURITY */
+.security-section{background:var(--bg3)}
+.security-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;max-width:1000px;margin:0 auto}
+.security-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center}
+.security-icon{font-size:2.5rem;margin-bottom:16px}
+.security-title{font-size:1rem;font-weight:700;margin-bottom:10px}
+.security-desc{font-size:.85rem;color:var(--text2);line-height:1.6}
+
+/* CTA */
+.cta-section{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:120px 5%;text-align:center;border-top:1px solid var(--border)}
+.cta-section h2{font-size:clamp(2rem,5vw,4rem);font-weight:900;letter-spacing:-.03em;margin-bottom:16px}
+.cta-section p{font-size:1.1rem;color:var(--text2);margin-bottom:48px}
+.auth-cards{display:flex;gap:24px;justify-content:center;max-width:800px;margin:0 auto;flex-wrap:wrap}
+.auth-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:40px 36px;flex:1;min-width:300px}
+.auth-card h3{font-size:1.2rem;font-weight:700;margin-bottom:8px}
+.auth-card .auth-subtitle{font-size:.85rem;color:var(--text2);margin-bottom:28px}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.auth-divider span{font-size:.8rem;color:var(--text2)}
+.auth-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:.9rem;outline:none;transition:border-color .2s;margin-bottom:12px}
+.auth-input:focus{border-color:var(--c2)}
+.auth-input::placeholder{color:var(--text2);opacity:.6}
+.btn-oauth{width:100%;margin-bottom:10px;padding:12px;border-radius:10px;justify-content:center;background:var(--bg);border:1px solid var(--border);color:var(--text);font-weight:500;font-size:.9rem}
+.btn-oauth:hover{background:var(--bg3);transform:none;box-shadow:none}
+.btn-oauth img,.btn-oauth span{font-size:1.1rem}
+.btn-full{width:100%;justify-content:center}
+.auth-switch{font-size:.8rem;color:var(--text2);margin-top:16px;text-align:center}
+.auth-switch a{color:var(--c3);text-decoration:none;font-weight:600}
+.auth-switch a:hover{text-decoration:underline}
+.auth-msg{font-size:.8rem;margin-top:12px;text-align:center;min-height:20px}
+.auth-msg.error{color:#f87171}
+.auth-msg.success{color:#4ade80}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:60px 5% 40px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px;max-width:1100px;margin:0 auto;margin-bottom:48px}
+.footer-brand .nav-logo{margin-bottom:16px}
+.footer-tagline{font-size:.9rem;color:var(--text2);max-width:240px;line-height:1.6}
+.footer-col h4{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;color:var(--text2)}
+.footer-col a{display:block;font-size:.85rem;color:var(--text2);text-decoration:none;margin-bottom:10px;transition:color .2s}
+.footer-col a:hover{color:var(--text)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:32px;border-top:1px solid var(--border);flex-wrap:gap;gap:16px}
+.footer-bottom p{font-size:.8rem;color:var(--text2);opacity:.7}
+
+/* COOKIE */
+#cookie-banner{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:14px;padding:20px 28px;display:flex;align-items:center;gap:24px;z-index:2000;box-shadow:var(--shadow);max-width:600px;width:90%}
+#cookie-banner.hidden{display:none}
+#cookie-banner p{font-size:.85rem;color:var(--text2);flex:1}
+.cookie-btns{display:flex;gap:8px;flex-shrink:0}
+.cookie-btns .btn{padding:8px 16px;font-size:.8rem;border-radius:8px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:1500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.active{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:40px;max-width:440px;width:90%;position:relative;transform:scale(.95);transition:transform .3s}
+.modal-overlay.active .modal{transform:scale(1)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.3rem;padding:4px}
+
+/* LEARN MORE */
+details summary{cursor:pointer;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.learn-more{max-width:700px;margin:40px auto 0;background:var(--glass);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.learn-more summary{padding:20px 28px;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+.learn-more summary::after{content:'▼';font-size:.8rem;color:var(--text2);transition:transform .3s}
+details[open] .learn-more summary::after{transform:rotate(180deg)}
+.learn-more-content{padding:0 28px 28px;color:var(--text2);font-size:.9rem;line-height:1.7}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .dd-grid{grid-template-columns:1fr}
+  .dd-grid.reverse{direction:ltr}
+  .hero-visual{display:none}
+  .footer-grid{grid-template-columns:1fr}
+  .hero-stats{gap:2rem}
+  .auth-cards{flex-direction:column}
+  #cookie-banner{flex-direction:column;text-align:center}
+}
+@media(min-width:769px){
+  .mobile-only{display:none}
+}
+
+/* ANIMATIONS */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+.stagger-1{transition-delay:.1s}
+.stagger-2{transition-delay:.2s}
+.stagger-3{transition-delay:.3s}
+.stagger-4{transition-delay:.4s}
+.stagger-5{transition-delay:.5s}
+</style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <div class="logo">
-                <div class="logo-icon">CB</div>
-                <span>ClearBalance</span>
-            </div>
-            <div class="nav-actions">
-                <button class="btn btn-ghost" id="signInBtn">Sign In</button>
-                <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Financial clarity, finally.</h1>
-        <p>Multi-currency. Multi-account. Zero complexity.</p>
-        <div class="cta-group">
-            <button class="btn-oauth" id="googleAuthBtn">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                Continue with Google
-            </button>
-            <button class="btn-oauth" id="githubAuthBtn">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.916 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                </svg>
-                Continue with GitHub
-            </button>
-        </div>
-    </section>
+<!-- NAV -->
+<nav id="navbar">
+  <a href="/" class="nav-logo">
+    <div class="logo-mark">💎</div>
+    ClearBalance
+  </a>
+  <div class="nav-links">
+    <a href="#features" data-i18n="nav.features">Features</a>
+    <a href="#security" data-i18n="nav.security">Security</a>
+  </div>
+  <div class="nav-actions">
+    <select class="nav-lang" id="langSwitcher" onchange="switchLang(this.value)">
+      <option value="en">🇬🇧 EN</option>
+      <option value="de">🇩🇪 DE</option>
+      <option value="fr">🇫🇷 FR</option>
+      <option value="pl">🇵🇱 PL</option>
+      <option value="es">🇪🇸 ES</option>
+      <option value="it">🇮🇹 IT</option>
+    </select>
+    <button class="nav-theme" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+    <a href="#auth" class="btn btn-ghost" data-i18n="nav.login">Sign In</a>
+    <a href="#auth" class="btn btn-primary" data-i18n="nav.getStarted">Get Started Free</a>
+  </div>
+</nav>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <h2 class="section-title">Everything you need</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🌍</div>
-                    <h3>50+ Currencies</h3>
-                    <p>Track accounts in any currency with intelligent conversion. From USD to PLN, we've got you covered.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Portfolio Intelligence</h3>
-                    <p>Real-time stock, ETF, and crypto tracking with performance analytics. Know your worth at a glance.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💳</div>
-                    <h3>Debt Engine</h3>
-                    <p>Calculate payments, interest, and amortization schedules automatically. Take control of your debts.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💼</div>
-                    <h3>Business Mode</h3>
-                    <p>IBAN, SWIFT, advanced accounting for professionals. Separate business and personal finances.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Bank-grade Security</h3>
-                    <p>Row-level security, encrypted at rest, OAuth 2.0. Your data is locked down tight.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Smart Analytics</h3>
-                    <p>Forecasting, health scores, and actionable insights. Make data-driven financial decisions.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge fade-in">
+      <span data-i18n="hero.badge">Financial Operating System</span>
+    </div>
+    <h1 class="fade-in stagger-1">Your Money,<br><span>Crystal Clear.</span></h1>
+    <p class="fade-in stagger-2" data-i18n="hero.subtitle">ClearBalance unifies your accounts, investments, debts, and savings into one intelligent platform. Built for individuals and businesses who demand clarity.</p>
+    <div class="hero-cta fade-in stagger-3">
+      <a href="#auth" class="btn btn-primary btn-hero" data-i18n="hero.cta">Start Free Today</a>
+      <a href="#features" class="btn btn-ghost btn-hero">See Features →</a>
+    </div>
+    <p class="hero-sub fade-in stagger-3" data-i18n="hero.ctaSub">No credit card required</p>
 
-    <!-- Analytics Preview -->
-    <section class="analytics-preview">
-        <div class="container">
-            <div class="analytics-content">
-                <div class="analytics-text">
-                    <h2>See your financial future</h2>
-                    <p>Our advanced analytics engine gives you unprecedented visibility into your financial health. Track trends, predict outcomes, and make smarter decisions with confidence.</p>
-                    <button class="btn btn-primary" style="background: var(--accent); color: var(--primary);">Explore Analytics</button>
-                </div>
-                <div class="analytics-visual">
-                    <div class="chart-placeholder">Interactive chart visualization</div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="hero-stats fade-in stagger-4">
+      <div class="stat-item">
+        <div class="stat-num">10K+</div>
+        <div class="stat-label" data-i18n="hero.stats.users">Active Users</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50+</div>
+        <div class="stat-label" data-i18n="hero.stats.currencies">Currencies</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">AES-256</div>
+        <div class="stat-label" data-i18n="hero.stats.secure">Bank-Grade Security</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">99.9%</div>
+        <div class="stat-label" data-i18n="hero.stats.uptime">Uptime</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Security Section -->
-    <section class="security">
-        <div class="container">
-            <h2 class="section-title">Security you can trust</h2>
-            <div class="security-grid">
-                <div class="security-item">
-                    <div class="security-icon">🛡️</div>
-                    <h3>Row-Level Security</h3>
-                    <p>Your data is yours alone. RLS ensures zero cross-account access.</p>
-                </div>
-                <div class="security-item">
-                    <div class="security-icon">🔐</div>
-                    <h3>Encrypted at Rest</h3>
-                    <p>All data encrypted using industry-standard AES-256 encryption.</p>
-                </div>
-                <div class="security-item">
-                    <div class="security-icon">✅</div>
-                    <h3>OAuth 2.0</h3>
-                    <p>Secure authentication through Google and GitHub. No password worries.</p>
-                </div>
-                <div class="security-item">
-                    <div class="security-icon">🌐</div>
-                    <h3>HTTPS Only</h3>
-                    <p>All connections secured with TLS 1.3. Man-in-the-middle attacks prevented.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-header">
+    <div class="section-label fade-in">Platform</div>
+    <h2 class="section-title fade-in stagger-1" data-i18n="features.title">Everything in one place</h2>
+    <p class="section-subtitle fade-in stagger-2" data-i18n="features.subtitle">From daily expenses to long-term investments, ClearBalance has the tools you need.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card fade-in">
+      <div class="feature-icon">📈</div>
+      <h3 class="feature-title" data-i18n="features.portfolio.title">Portfolio Intelligence</h3>
+      <p class="feature-desc" data-i18n="features.portfolio.desc">Real-time stock, ETF, and crypto tracking with live prices, gain/loss analysis, and allocation charts.</p>
+    </div>
+    <div class="feature-card fade-in stagger-1">
+      <div class="feature-icon">🏦</div>
+      <h3 class="feature-title" data-i18n="features.debt.title">Debt Engine</h3>
+      <p class="feature-desc" data-i18n="features.debt.desc">Full amortization schedules, prepayment scenarios, and visual payoff timelines for every loan.</p>
+    </div>
+    <div class="feature-card fade-in stagger-2">
+      <div class="feature-icon">🌍</div>
+      <h3 class="feature-title" data-i18n="features.multi.title">Multi-Currency</h3>
+      <p class="feature-desc" data-i18n="features.multi.desc">50+ currencies with live formatting. Each account holds its own currency independently.</p>
+    </div>
+    <div class="feature-card fade-in stagger-3">
+      <div class="feature-icon">🏢</div>
+      <h3 class="feature-title" data-i18n="features.business.title">Business Mode</h3>
+      <p class="feature-desc" data-i18n="features.business.desc">IBAN, SWIFT, account numbers, VAT support, cashflow projections, and advanced reporting.</p>
+    </div>
+    <div class="feature-card fade-in stagger-4">
+      <div class="feature-icon">🐷</div>
+      <h3 class="feature-title" data-i18n="features.piggy.title">Savings Goals</h3>
+      <p class="feature-desc" data-i18n="features.piggy.desc">Visual progress bars, deadline countdowns, and contribution tracking for every savings target.</p>
+    </div>
+    <div class="feature-card fade-in stagger-5">
+      <div class="feature-icon">🔄</div>
+      <h3 class="feature-title" data-i18n="features.recurring.title">Smart Recurring</h3>
+      <p class="feature-desc" data-i18n="features.recurring.desc">Track subscriptions and recurring payments with automatic next-date calculations.</p>
+    </div>
+  </div>
+</section>
 
-    <!-- Learn More Section -->
-    <section class="learn-more">
-        <div class="container">
-            <h2 class="section-title">Learn More</h2>
-            <div class="expandable">
-                <div class="expandable-header">
-                    <h3>How does multi-currency work?</h3>
-                    <span class="expandable-icon">▼</span>
-                </div>
-                <div class="expandable-content">
-                    <div class="expandable-inner">
-                        Each account can have its own currency. When you view your overview, all balances are intelligently converted to your preferred display currency. Exchange rates are updated daily to ensure accuracy.
-                    </div>
-                </div>
-            </div>
-            <div class="expandable">
-                <div class="expandable-header">
-                    <h3>What's the debt engine?</h3>
-                    <span class="expandable-icon">▼</span>
-                </div>
-                <div class="expandable-content">
-                    <div class="expandable-inner">
-                        Our debt engine calculates your monthly payments, total interest, and provides a full amortization schedule. You can also simulate prepayments to see how extra payments affect your timeline and total interest paid.
-                    </div>
-                </div>
-            </div>
-            <div class="expandable">
-                <div class="expandable-header">
-                    <h3>Is my data safe?</h3>
-                    <span class="expandable-icon">▼</span>
-                </div>
-                <div class="expandable-content">
-                    <div class="expandable-inner">
-                        Absolutely. We use Supabase's row-level security to ensure your data is isolated. All data is encrypted at rest with AES-256. We never store API keys in the frontend, and all sensitive operations happen through secure edge functions.
-                    </div>
-                </div>
-            </div>
-            <div class="expandable">
-                <div class="expandable-header">
-                    <h3>Can I use this for my business?</h3>
-                    <span class="expandable-icon">▼</span>
-                </div>
-                <div class="expandable-content">
-                    <div class="expandable-inner">
-                        Yes! Business mode provides IBAN, SWIFT/BIC, account numbers, and advanced features tailored for professional use. You can maintain completely separate business and personal financial profiles.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- SECURITY -->
+<section id="security" class="security-section">
+  <div class="section-header">
+    <div class="section-label fade-in">Security</div>
+    <h2 class="section-title fade-in stagger-1" data-i18n="security.title">Security first. Always.</h2>
+    <p class="section-subtitle fade-in stagger-2" data-i18n="security.subtitle">Your financial data deserves the highest protection.</p>
+  </div>
+  <div class="security-grid">
+    <div class="security-card fade-in">
+      <div class="security-icon">🔐</div>
+      <h3 class="security-title" data-i18n="security.rls.title">Row-Level Security</h3>
+      <p class="security-desc" data-i18n="security.rls.desc">Every database row enforces that only you can access your data — at the database level.</p>
+    </div>
+    <div class="security-card fade-in stagger-1">
+      <div class="security-icon">🔑</div>
+      <h3 class="security-title" data-i18n="security.oauth.title">OAuth 2.0</h3>
+      <p class="security-desc" data-i18n="security.oauth.desc">Sign in with Google or GitHub. No passwords stored. Industry-standard authentication.</p>
+    </div>
+    <div class="security-card fade-in stagger-2">
+      <div class="security-icon">🛡️</div>
+      <h3 class="security-title" data-i18n="security.encrypted.title">Encrypted at Rest</h3>
+      <p class="security-desc" data-i18n="security.encrypted.desc">All data encrypted in Supabase PostgreSQL. Zero access for us.</p>
+    </div>
+    <div class="security-card fade-in stagger-3">
+      <div class="security-icon">⚡</div>
+      <h3 class="security-title" data-i18n="security.edge.title">Edge Functions</h3>
+      <p class="security-desc" data-i18n="security.edge.desc">API keys never reach your browser. All external calls go through secure server-side functions.</p>
+    </div>
+  </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>ClearBalance</h3>
-                <p>Your financial operating system. Built on Supabase for security, scalability, and speed.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Product</h4>
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#security">Security</a>
-                <a href="#roadmap">Roadmap</a>
-            </div>
-            <div class="footer-links">
-                <h4>Legal</h4>
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
-                <a href="cookie_policy.html">Cookie Policy</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 ClearBalance. All rights reserved.</p>
-        </div>
-    </footer>
+  <details style="max-width:700px;margin:48px auto 0">
+    <summary class="learn-more">
+      <span style="padding:20px 28px;display:flex;justify-content:space-between;align-items:center;font-weight:600;cursor:pointer;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;">
+        Learn more about our security →
+        <span style="font-size:.8rem;color:var(--text2)">Click to expand</span>
+      </span>
+    </summary>
+    <div style="padding:24px;background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px;color:var(--text2);font-size:.9rem;line-height:1.8">
+      <p><strong style="color:var(--text)">Row-Level Security (RLS):</strong> Every single table in our database has RLS policies enforced at the PostgreSQL level. This means even if a bug existed in our application code, the database itself would reject unauthorized data access.</p>
+      <br>
+      <p><strong style="color:var(--text)">Authentication:</strong> We use Supabase Auth which implements OAuth 2.0 flows. Your Google or GitHub credentials never touch our servers — authentication tokens are issued directly by the provider.</p>
+      <br>
+      <p><strong style="color:var(--text)">API Key Protection:</strong> All stock price and external API calls are made from Supabase Edge Functions running on Deno Deploy. Your browser never sees any API keys.</p>
+      <br>
+      <p><strong style="color:var(--text)">Cookie Policy:</strong> We use only essential session cookies required to keep you logged in. No tracking, no advertising cookies.</p>
+    </div>
+  </details>
+</section>
 
-    <!-- Cookie Banner -->
-    <div class="cookie-banner" id="cookieBanner">
-        <h3>We use essential cookies</h3>
-        <p>We only use essential cookies to keep you signed in and store your preferences. No tracking, no analytics, no third-party cookies.</p>
-        <div class="cookie-actions">
-            <button class="btn btn-primary" id="acceptCookies">Accept</button>
-            <button class="btn btn-ghost" id="declineCookies">Decline</button>
-        </div>
+<!-- AUTH / CTA -->
+<section class="cta-section" id="auth">
+  <h2 class="fade-in" data-i18n="cta.title">Ready to get clear?</h2>
+  <p class="fade-in stagger-1" data-i18n="cta.subtitle">Join thousands managing their finances with clarity.</p>
+  
+  <div class="auth-cards fade-in stagger-2">
+    <!-- SIGN IN CARD -->
+    <div class="auth-card" id="signInCard">
+      <h3 data-i18n="auth.signIn">Sign in to ClearBalance</h3>
+      <p class="auth-subtitle">Welcome back</p>
+      
+      <button class="btn btn-oauth" onclick="oauthLogin('google')">
+        <span>🔵</span> <span data-i18n="auth.google">Continue with Google</span>
+      </button>
+      <button class="btn btn-oauth" onclick="oauthLogin('github')">
+        <span>⚫</span> <span data-i18n="auth.github">Continue with GitHub</span>
+      </button>
+      
+      <div class="auth-divider"><span data-i18n="auth.or">or</span></div>
+      
+      <input type="email" class="auth-input" id="siEmail" placeholder="Email address" data-i18n-placeholder="auth.email">
+      <input type="password" class="auth-input" id="siPassword" placeholder="Password" data-i18n-placeholder="auth.password">
+      <button class="btn btn-primary btn-full" onclick="emailLogin()" data-i18n="auth.signInLink">Sign in</button>
+      
+      <div class="auth-msg" id="siMsg"></div>
+      <p class="auth-switch">
+        <span data-i18n="auth.noAccount">Don't have an account?</span>
+        <a href="#" onclick="toggleAuthCards()" data-i18n="auth.signUpLink">Sign up</a>
+      </p>
     </div>
 
-    <!-- Auth Modal -->
-    <div class="modal" id="authModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeModal">×</button>
-            <h2 class="modal-title" id="modalTitle">Welcome back</h2>
-
-            <!-- Toggle between Sign In / Sign Up -->
-            <div class="type-selector" style="margin-bottom: 2rem;">
-                <div class="type-option selected" data-mode="signin">
-                    <div class="type-option-label">Sign In</div>
-                </div>
-                <div class="type-option" data-mode="signup">
-                    <div class="type-option-label">Sign Up</div>
-                </div>
-            </div>
-
-            <form id="emailAuthForm">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="you@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="••••••••" required minlength="6">
-                </div>
-                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" placeholder="••••••••" minlength="6">
-                </div>
-                <p style="font-size: 0.875rem; color: var(--secondary); margin-bottom: 1rem;">
-                    By continuing, you agree to our <a href="terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Privacy Policy</a>.
-                </p>
-                <button type="submit" class="btn btn-primary" id="authSubmitBtn" style="width: 100%;">Sign In</button>
-            </form>
-            <div class="divider">or</div>
-            <div class="oauth-buttons">
-                <button class="btn-oauth" id="modalGoogleBtn">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                    </svg>
-                    Continue with Google
-                </button>
-                <button class="btn-oauth" id="modalGithubBtn">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.916 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                    </svg>
-                    Continue with GitHub
-                </button>
-            </div>
-            <p style="font-size: 0.875rem; color: var(--secondary); margin-top: 1rem; text-align: center;">
-                By continuing, you agree to our <a href="terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Privacy Policy</a>.
-            </p>
-        </div>
+    <!-- SIGN UP CARD -->
+    <div class="auth-card" id="signUpCard" style="display:none">
+      <h3 data-i18n="auth.signUp">Create your account</h3>
+      <p class="auth-subtitle">Free forever. No credit card needed.</p>
+      
+      <button class="btn btn-oauth" onclick="oauthLogin('google')">
+        <span>🔵</span> <span data-i18n="auth.google">Continue with Google</span>
+      </button>
+      <button class="btn btn-oauth" onclick="oauthLogin('github')">
+        <span>⚫</span> <span data-i18n="auth.github">Continue with GitHub</span>
+      </button>
+      
+      <div class="auth-divider"><span data-i18n="auth.or">or</span></div>
+      
+      <input type="email" class="auth-input" id="suEmail" placeholder="Email address" data-i18n-placeholder="auth.email">
+      <input type="password" class="auth-input" id="suPassword" placeholder="Password" data-i18n-placeholder="auth.password">
+      <button class="btn btn-primary btn-full" onclick="emailSignUp()" data-i18n="auth.signUpLink">Sign up</button>
+      
+      <div class="auth-msg" id="suMsg"></div>
+      <p class="auth-switch">
+        <span data-i18n="auth.haveAccount">Already have an account?</span>
+        <a href="#" onclick="toggleAuthCards()" data-i18n="auth.signInLink">Sign in</a>
+      </p>
     </div>
+  </div>
+</section>
 
-    <script>
-        // Configure Supabase
-        const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
-        const { createClient } = supabase;
-        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="nav-logo">
+        <div class="logo-mark">💎</div>
+        ClearBalance
+      </a>
+      <p class="footer-tagline" data-i18n="footer.tagline">Your financial operating system.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#security" data-i18n="nav.security">Security</a>
+      <a href="#auth">Dashboard</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#" data-i18n="footer.privacy">Privacy</a>
+      <a href="#" data-i18n="footer.terms">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 ClearBalance. <span data-i18n="footer.rights">All rights reserved.</span></p>
+  </div>
+</footer>
 
-        // Cookie Banner
-        const cookieBanner = document.getElementById('cookieBanner');
-        const acceptCookies = document.getElementById('acceptCookies');
-        const declineCookies = document.getElementById('declineCookies');
+<!-- COOKIE BANNER -->
+<div id="cookie-banner">
+  <p data-i18n="cookie.text">We use essential cookies only to keep you signed in.</p>
+  <div class="cookie-btns">
+    <button class="btn btn-ghost" onclick="rejectCookies()" data-i18n="cookie.decline">Decline</button>
+    <button class="btn btn-primary" onclick="acceptCookies()" data-i18n="cookie.accept">Accept</button>
+  </div>
+</div>
 
-        if (!localStorage.getItem('cookiesAccepted')) {
-            setTimeout(() => {
-                cookieBanner.classList.add('show');
-            }, 1000);
-        }
+<script>
+const SUPABASE_URL = 'https://myapdqurgspzlhmutkeq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YXBkcXVyZ3NwemxobXV0a2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTQ2NTksImV4cCI6MjA4NjIzMDY1OX0.T4Doyc26Led9dFZu6eQ6FiZv7mZdBd6nx17PW2-05ck';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        acceptCookies.addEventListener('click', () => {
-            localStorage.setItem('cookiesAccepted', 'true');
-            cookieBanner.classList.remove('show');
-        });
+// Check session on load
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) window.location.href = '/dashboard.html';
+})();
 
-        declineCookies.addEventListener('click', () => {
-            localStorage.setItem('cookiesAccepted', 'false');
-            cookieBanner.classList.remove('show');
-        });
+// Auth state
+sb.auth.onAuthStateChange((event, session) => {
+  if (session) window.location.href = '/dashboard.html';
+});
 
-        // Modal
-        const authModal = document.getElementById('authModal');
-        const signInBtn = document.getElementById('signInBtn');
-        const getStartedBtn = document.getElementById('getStartedBtn');
-        const closeModal = document.getElementById('closeModal');
+// I18N
+let currentLang = localStorage.getItem('cb-lang') || 'en';
+let translations = {};
 
-        signInBtn.addEventListener('click', () => {
-            authModal.classList.add('show');
-        });
+async function loadTranslations(lang) {
+  const r = await fetch(`/locales/${lang}.json`);
+  translations = await r.json();
+  applyTranslations();
+}
 
-        getStartedBtn.addEventListener('click', () => {
-            authModal.classList.add('show');
-        });
+function t(key) {
+  const keys = key.split('.');
+  let val = translations;
+  for (const k of keys) val = val?.[k];
+  return val || key;
+}
 
-        closeModal.addEventListener('click', () => {
-            authModal.classList.remove('show');
-        });
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const text = t(key);
+    if (text !== key) el.textContent = text;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const text = t(el.dataset.i18nPlaceholder);
+    if (text) el.placeholder = text;
+  });
+}
 
-        authModal.addEventListener('click', (e) => {
-            if (e.target === authModal) {
-                authModal.classList.remove('show');
-            }
-        });
+function switchLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('cb-lang', lang);
+  loadTranslations(lang);
+}
 
-        // Auth mode toggle (Sign In / Sign Up)
-        let authMode = 'signin';
-        const authModeOptions = document.querySelectorAll('.type-option[data-mode]');
-        const modalTitle = document.getElementById('modalTitle');
-        const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
-        const authSubmitBtn = document.getElementById('authSubmitBtn');
+// Init lang
+document.getElementById('langSwitcher').value = currentLang;
+loadTranslations(currentLang);
 
-        authModeOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                authModeOptions.forEach(o => o.classList.remove('selected'));
-                this.classList.add('selected');
-                authMode = this.dataset.mode;
+// THEME
+const savedTheme = localStorage.getItem('cb-theme');
+if (savedTheme) {
+  document.documentElement.dataset.theme = savedTheme;
+} else {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
+}
 
-                if (authMode === 'signup') {
-                    modalTitle.textContent = 'Create Account';
-                    confirmPasswordGroup.style.display = 'block';
-                    authSubmitBtn.textContent = 'Sign Up';
-                    document.getElementById('confirmPassword').required = true;
-                } else {
-                    modalTitle.textContent = 'Welcome back';
-                    confirmPasswordGroup.style.display = 'none';
-                    authSubmitBtn.textContent = 'Sign In';
-                    document.getElementById('confirmPassword').required = false;
-                }
-            });
-        });
+function toggleTheme() {
+  const current = document.documentElement.dataset.theme;
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('cb-theme', next);
+}
 
-        // Expandables
-        document.querySelectorAll('.expandable-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const expandable = header.parentElement;
-                expandable.classList.toggle('active');
-            });
-        });
+// NAV SCROLL
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
 
-        // OAuth Authentication
-        async function signInWithGoogle() {
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: window.location.origin + '/dashboard.html'
-                    redirectTo: 'https://dashboard.clearbalance.xyz'
-                }
-            });
-            if (error) console.error('Google auth error:', error);
-        }
+// COOKIE
+const cookieConsent = localStorage.getItem('cb-cookie');
+if (cookieConsent) document.getElementById('cookie-banner').classList.add('hidden');
 
-        async function signInWithGithub() {
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'github',
-                options: {
-                    redirectTo: window.location.origin + '/dashboard.html'
-                    redirectTo: 'https://dashboard.clearbalance.xyz'
-                }
-            });
-            if (error) console.error('GitHub auth error:', error);
-        }
+function acceptCookies() {
+  localStorage.setItem('cb-cookie', 'accepted');
+  document.getElementById('cookie-banner').classList.add('hidden');
+}
+function rejectCookies() {
+  localStorage.setItem('cb-cookie', 'rejected');
+  document.getElementById('cookie-banner').classList.add('hidden');
+}
 
-        document.getElementById('googleAuthBtn').addEventListener('click', signInWithGoogle);
-        document.getElementById('githubAuthBtn').addEventListener('click', signInWithGoogle);
-        document.getElementById('modalGoogleBtn').addEventListener('click', signInWithGoogle);
-        document.getElementById('modalGithubBtn').addEventListener('click', signInWithGithub);
+// AUTH TOGGLE
+function toggleAuthCards() {
+  const si = document.getElementById('signInCard');
+  const su = document.getElementById('signUpCard');
+  if (si.style.display === 'none') { si.style.display = ''; su.style.display = 'none'; }
+  else { si.style.display = 'none'; su.style.display = ''; }
+}
 
-        // Email Authentication
-        document.getElementById('emailAuthForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+// OAUTH
+async function oauthLogin(provider) {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo: `${window.location.origin}/dashboard.html` }
+  });
+  if (error) console.error(error);
+}
 
-            if (authMode === 'signup') {
-                // Sign Up
-                if (password !== confirmPassword) {
-                    alert('Passwords do not match!');
-                    return;
-                }
+// EMAIL LOGIN
+async function emailLogin() {
+  const email = document.getElementById('siEmail').value.trim();
+  const password = document.getElementById('siPassword').value;
+  const msg = document.getElementById('siMsg');
+  msg.textContent = 'Signing in...';
+  msg.className = 'auth-msg';
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) { msg.textContent = error.message; msg.className = 'auth-msg error'; }
+  else { msg.textContent = 'Success! Redirecting...'; msg.className = 'auth-msg success'; }
+}
 
-                if (password.length < 6) {
-                    alert('Password must be at least 6 characters long');
-                    return;
-                }
+// EMAIL SIGNUP
+async function emailSignUp() {
+  const email = document.getElementById('suEmail').value.trim();
+  const password = document.getElementById('suPassword').value;
+  const msg = document.getElementById('suMsg');
+  msg.textContent = 'Creating account...';
+  msg.className = 'auth-msg';
+  const { error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/dashboard.html` } });
+  if (error) { msg.textContent = error.message; msg.className = 'auth-msg error'; }
+  else { msg.textContent = 'Check your email to confirm your account!'; msg.className = 'auth-msg success'; }
+}
 
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        emailRedirectTo: window.location.origin + '/dashboard.html'
-                        emailRedirectTo: 'https://dashboard.clearbalance.xyz'
-                    }
-                });
-
-                if (error) {
-                    alert('Error: ' + error.message);
-                } else {
-                    alert('Success! Please check your email to confirm your account.');
-                    authModal.classList.remove('show');
-                    e.target.reset();
-                }
-            } else {
-                // Sign In
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email,
-                    password
-                });
-
-                if (error) {
-                    alert('Error: ' + error.message);
-                } else {
-                    window.location.href = '/dashboard.html';
-                    window.location.href = 'https://dashboard.clearbalance.xyz';
-                }
-            }
-        });
-
-        // Check if already authenticated
-        supabaseClient.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                window.location.href = '/dashboard.html';
-                window.location.href = 'https://dashboard.clearbalance.xyz';
-            }
-        });
-    </script>
+// INTERSECTION OBSERVER for animations
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
