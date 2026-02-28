@@ -1,9 +1,14 @@
 {
   "rewrites": [
     {
-      "source": "/:path*",
+      "source": "/",
       "has": [{ "type": "host", "value": "dashboard.clearbalance.xyz" }],
-      "destination": "/dashboard/:path*"
+      "destination": "/dashboard/index.html"
+    },
+    {
+      "source": "/:path+",
+      "has": [{ "type": "host", "value": "dashboard.clearbalance.xyz" }],
+      "destination": "/dashboard/:path+"
     }
   ],
   "headers": [
