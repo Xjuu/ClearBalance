@@ -3,6 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  // If this file gets served on the dashboard subdomain, load the dashboard immediately.
+  // This bypasses any Vercel routing issues entirely.
+  if (window.location.hostname === 'dashboard.clearbalance.xyz') {
+    fetch('/dashboard/index.html')
+      .then(r => r.text())
+      .then(html => { document.open(); document.write(html); document.close(); })
+      .catch(() => { window.location.href = '/dashboard/index.html'; });
+    throw new Error('→ dashboard');
+  }
+</script>
 <title>ClearBalance — Your Financial Operating System</title>
 <meta name="description" content="Unify your accounts, investments, debts, and savings. Built for individuals and businesses who demand financial clarity.">
 <meta property="og:title" content="ClearBalance — Your Financial Operating System">
