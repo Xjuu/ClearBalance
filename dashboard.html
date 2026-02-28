@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClearBalance — Dashboard</title>
+<script>
+  // Canonical URL: always run at dashboard.clearbalance.xyz
+  if (window.location.hostname === 'clearbalance.xyz' || window.location.hostname === 'www.clearbalance.xyz') {
+    window.location.replace('https://dashboard.clearbalance.xyz' + (window.location.search || '') + (window.location.hash || ''));
+  }
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>
@@ -469,13 +475,58 @@ body.biz-mode .personal-only{display:none}
 .velocity-bar{height:8px;border-radius:10px;background:var(--bg3);overflow:hidden;margin-top:8px}
 .velocity-fill{height:100%;border-radius:10px;transition:width .8s ease}
 
-/* ======= FINANCIAL HEALTH SCORE ======= */
+/* ======= FINANCIAL HEALTH SCORE (mini widget) ======= */
 .health-score{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;position:relative;overflow:hidden}
 .health-score::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(127,140,170,.12),transparent);border-radius:50%}
 .score-ring{width:90px;height:90px;margin:0 auto 12px;position:relative}
 .score-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800}
 .score-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:4px}
 .score-title{font-size:1rem;font-weight:700}
+
+/* ======= HEALTH METRIC CARD ======= */
+.health-metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
+.health-metric:hover{transform:translateY(-2px);border-color:rgba(127,140,170,.3)}
+.hm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hm-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3)}
+.hm-status{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+.hm-good{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+.hm-warn{background:rgba(251,191,36,.12);color:var(--yellow);border:1px solid rgba(251,191,36,.2)}
+.hm-bad{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.hm-value{font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px}
+.hm-target{font-size:.72rem;color:var(--text3);margin-bottom:10px}
+.hm-bar{height:5px;background:var(--bg3);border-radius:10px;overflow:hidden}
+.hm-bar-fill{height:100%;border-radius:10px;transition:width .9s ease}
+.hm-desc{font-size:.75rem;color:var(--text3);margin-top:8px;line-height:1.5}
+.hm-icon{font-size:1.4rem;position:absolute;top:16px;right:16px;opacity:.25}
+
+/* ======= RISK FLAG ======= */
+.risk-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.risk-item:last-child{border-bottom:none}
+.risk-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.risk-dot-red{background:var(--red);box-shadow:0 0 6px rgba(248,113,113,.4)}
+.risk-dot-yellow{background:var(--yellow);box-shadow:0 0 6px rgba(251,191,36,.4)}
+.risk-title{font-size:.82rem;font-weight:600;margin-bottom:2px}
+.risk-desc{font-size:.75rem;color:var(--text3)}
+
+/* ======= ACTION ITEM ======= */
+.action-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.action-item:last-child{border-bottom:none}
+.action-num{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7F8CAA,#B8CFCE);color:#0d0e14;font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.action-title{font-size:.82rem;font-weight:600;margin-bottom:2px}
+.action-impact{font-size:.72rem;color:var(--text3)}
+
+/* ======= STRENGTH BADGE ======= */
+.strength-badge{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;font-size:.78rem;font-weight:600;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--green)}
+
+/* ======= INVOICE STATUS ======= */
+.inv-draft{background:var(--bg3);color:var(--text2)}
+.inv-sent{background:rgba(96,165,250,.12);color:var(--blue)}
+.inv-paid{background:rgba(74,222,128,.12);color:var(--green)}
+.inv-overdue{background:rgba(248,113,113,.12);color:var(--red)}
+.inv-cancelled{background:rgba(127,140,170,.1);color:var(--text3)}
+
+/* ======= LINE ITEM ROW ======= */
+.line-item-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center}
 </style>
 </head>
 <body>
@@ -535,6 +586,9 @@ body.biz-mode .personal-only{display:none}
       <a class="nav-item" data-view="analytics" onclick="navigate('analytics')">
         <span class="nav-icon">🔬</span><span class="nav-text">Analytics</span>
       </a>
+      <a class="nav-item" data-view="health" onclick="navigate('health')">
+        <span class="nav-icon">🫀</span><span class="nav-text">Financial Health</span>
+      </a>
     </div>
 
     <div class="sidebar-bottom">
@@ -557,7 +611,7 @@ body.biz-mode .personal-only{display:none}
     <header class="topbar" style="position:relative">
       <span class="topbar-title" id="topbarTitle">Overview</span>
       <div class="topbar-actions">
-        <div class="mode-pill">
+        <div class="mode-pill" id="modePill" style="display:none">
           <button id="modePersonalBtn" class="active" onclick="setMode('personal')" title="Personal finance">👤 Personal</button>
           <button id="modeBusinessBtn" onclick="setMode('business')" title="Business finance">🏢 Business</button>
         </div>
@@ -595,16 +649,6 @@ body.biz-mode .personal-only{display:none}
       </div>
       <div class="month-bar-wrap"><div class="month-bar-fill" id="monthBarFill" style="width:0%"></div></div>
     </header>
-          <option value="AED">🇦🇪 AED</option>
-          <option value="QAR">🇶🇦 QAR</option>
-          <option value="KWD">🇰🇼 KWD</option>
-          <option value="BHD">🇧🇭 BHD</option>
-          <option value="THB">🇹🇭 THB</option>
-          <option value="MYR">🇲🇾 MYR</option>
-          <option value="IDR">🇮🇩 IDR</option>
-          <option value="PHP">🇵🇭 PHP</option>
-          <option value="VND">🇻🇳 VND</option>
-          <option value="PKR">🇵🇰 PKR</option>
     <!-- CONTENT -->
     <div class="content" id="content">
 
@@ -718,7 +762,7 @@ body.biz-mode .personal-only{display:none}
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:16px">
-            <div class="health-score">
+            <div class="health-score" id="healthScoreWidget">
               <div class="score-label">Financial Health</div>
               <div class="score-ring">
                 <svg width="90" height="90" viewBox="0 0 90 90">
@@ -730,6 +774,7 @@ body.biz-mode .personal-only{display:none}
                 <div class="score-val" id="healthScore">—</div>
               </div>
               <div class="score-title" id="healthLabel">Calculating...</div>
+              <button class="btn btn-ghost btn-sm" onclick="navigate('health')" style="margin-top:12px;width:100%">Full Analysis →</button>
             </div>
             <div class="card">
               <div class="card-header"><span class="card-title">📅 Upcoming Bills</span></div>
@@ -982,6 +1027,93 @@ body.biz-mode .personal-only{display:none}
           <div class="chart-card">
             <div class="chart-header"><span class="chart-title">📅 Daily Spending Heatmap</span></div>
             <div class="chart-body"><div id="heatChart"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======= FINANCIAL HEALTH ======= -->
+      <div class="view" id="view-health">
+        <div style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <h2 style="font-size:1.2rem;font-weight:800">Financial Health Report</h2>
+            <p style="color:var(--text3);font-size:.8rem">Deep multi-dimensional analysis of your financial position</p>
+          </div>
+          <div id="healthGradeCircle" style="width:64px;height:64px;border-radius:50%;background:var(--bg3);border:3px solid var(--border);display:flex;align-items:center;justify-content:center;flex-direction:column;flex-shrink:0">
+            <div id="healthGradeLetter" style="font-size:1.4rem;font-weight:900;line-height:1">—</div>
+            <div style="font-size:.55rem;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase">grade</div>
+          </div>
+        </div>
+
+        <!-- Score bar -->
+        <div class="card" style="margin-bottom:16px;padding:20px">
+          <div style="display:flex;align-items:center;gap:20px">
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                <span style="font-weight:700;font-size:.95rem">Overall Score</span>
+                <span id="healthOverallScore" style="font-weight:900;font-size:1.1rem">—/100</span>
+              </div>
+              <div style="height:12px;background:var(--bg3);border-radius:10px;overflow:hidden">
+                <div id="healthScoreBar" style="height:100%;border-radius:10px;background:linear-gradient(90deg,#7F8CAA,#B8CFCE);transition:width 1s ease;width:0%"></div>
+              </div>
+              <div id="healthSummaryText" style="font-size:.78rem;color:var(--text3);margin-top:8px">Calculating your financial profile...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric grid -->
+        <div id="healthMetricsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:20px"></div>
+
+        <!-- Risk radar + recommendations -->
+        <div class="grid-2" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">⚠️ Risk Flags</span></div>
+            <div class="card-body" id="healthRisks" style="padding:14px"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">🎯 Priority Actions</span></div>
+            <div class="card-body" id="healthActions" style="padding:14px"></div>
+          </div>
+        </div>
+
+        <!-- Strength badges -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">✅ Financial Strengths</span></div>
+          <div class="card-body" id="healthStrengths" style="padding:14px;display:flex;gap:8px;flex-wrap:wrap"></div>
+        </div>
+      </div>
+
+      <!-- ======= INVOICES (BIZ) ======= -->
+      <div class="view biz-only" id="view-invoices" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <h2 style="font-size:1.2rem;font-weight:800">Invoices <span class="biz-tag">BIZ</span></h2>
+            <p style="color:var(--text3);font-size:.8rem">Create, send and track client invoices</p>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('invoiceModal')">+ New Invoice</button>
+        </div>
+        <div class="grid-3" style="margin-bottom:16px">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(74,222,128,.12)">💵</div>
+            <div class="stat-label">Total Invoiced</div>
+            <div class="stat-value" id="inv-total">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(251,191,36,.12)">⏳</div>
+            <div class="stat-label">Awaiting Payment</div>
+            <div class="stat-value" id="inv-outstanding">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(248,113,113,.12)">🚨</div>
+            <div class="stat-label">Overdue</div>
+            <div class="stat-value" id="inv-overdue">—</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="overflow-x:auto">
+            <table class="data-table">
+              <thead><tr><th>Invoice #</th><th>Client</th><th>Issue Date</th><th>Due Date</th><th>Amount</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody id="invoicesBody"><tr><td colspan="7" class="loading-overlay"><div class="spinner"></div></td></tr></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1512,6 +1644,93 @@ body.biz-mode .personal-only{display:none}
   </div>
 </div>
 
+<!-- ======= INVOICE MODAL ======= -->
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <span class="modal-title" id="invoiceModalTitle">New Invoice</span>
+      <button class="modal-close" onclick="closeModal('invoiceModal')">✕</button>
+    </div>
+    <input type="hidden" id="invoiceId">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Invoice #</label>
+        <input class="form-input" id="invNumber" placeholder="INV-2025-001">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Currency</label>
+        <select class="form-select" id="invCurrency">
+          <option>USD</option><option>EUR</option><option>GBP</option><option>PLN</option><option>CHF</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Client Name *</label>
+        <input class="form-input" id="invClient" placeholder="Acme Corp">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Client Email</label>
+        <input class="form-input" id="invEmail" type="email" placeholder="billing@acme.com">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Client Address</label>
+      <input class="form-input" id="invAddress" placeholder="123 Street, City, Country">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Issue Date</label>
+        <input class="form-input" id="invIssueDate" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date</label>
+        <input class="form-input" id="invDueDate" type="date">
+      </div>
+    </div>
+
+    <!-- Line items -->
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <label class="form-label" style="margin:0">Line Items</label>
+        <button class="btn btn-ghost btn-sm" onclick="addLineItem()">+ Add Line</button>
+      </div>
+      <div id="lineItemsContainer">
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:6px;margin-bottom:6px;font-size:.72rem;font-weight:700;color:var(--text3);padding:0 2px">
+          <span>Description</span><span>Qty</span><span>Unit Price</span><span></span>
+        </div>
+        <div id="lineItemsList"></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:20px;padding:10px 2px 0;border-top:1px solid var(--border);margin-top:8px;font-size:.82rem">
+        <span>Subtotal: <strong id="invSubtotalDisplay">$0.00</strong></span>
+        <span>Tax: <select class="form-select" id="invTaxRate" onchange="recalcInvoice()" style="display:inline;width:auto;padding:2px 6px;font-size:.78rem"><option value="0">0%</option><option value="5">5%</option><option value="8">8%</option><option value="19">19%</option><option value="20">20%</option><option value="21">21%</option><option value="23">23%</option><option value="25">25%</option></select></span>
+        <span style="font-weight:800;font-size:.9rem">Total: <span id="invTotalDisplay">$0.00</span></span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="invStatus">
+          <option value="draft">Draft</option>
+          <option value="sent">Sent</option>
+          <option value="paid">Paid</option>
+          <option value="overdue">Overdue</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <input class="form-input" id="invNotes" placeholder="Payment terms, bank details…">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('invoiceModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveInvoice()">Save Invoice</button>
+    </div>
+  </div>
+</div>
+
 <!-- ======= COMMAND PALETTE ======= -->
 <div class="cmd-overlay" id="cmdOverlay" onclick="closeCmd(event)">
   <div class="cmd-box" onclick="event.stopPropagation()">
@@ -1555,7 +1774,7 @@ function setMode(mode) {
   document.body.classList.toggle('biz-mode', BIZ_MODE);
   document.getElementById('modePersonalBtn').classList.toggle('active', !BIZ_MODE);
   document.getElementById('modeBusinessBtn').classList.toggle('active', BIZ_MODE);
-  // Show/hide biz-only nav items
+  // Show/hide biz-only nav items individually
   document.querySelectorAll('.biz-only').forEach(el => {
     el.style.display = BIZ_MODE ? '' : 'none';
   });
@@ -1708,6 +1927,7 @@ const CMD_COMMANDS = [
   {label:'Go to Debts',icon:'📉',action:()=>navigate('debts')},
   {label:'Go to Piggy Banks',icon:'🐷',action:()=>navigate('piggy')},
   {label:'Go to Portfolio',icon:'📈',action:()=>navigate('portfolio'),shortcut:'G+P'},
+  {label:'Go to Financial Health',icon:'🫀',action:()=>navigate('health')},
   {label:'Go to Analytics',icon:'🔬',action:()=>navigate('analytics')},
   {label:'Go to Settings',icon:'⚙️',action:()=>navigate('settings')},
   {label:'New Transaction',icon:'➕',action:()=>openModal('txModal'),shortcut:'N+T'},
@@ -1858,7 +2078,7 @@ async function initDashboard() {
   // Set default dates
   const today = new Date().toISOString().split('T')[0];
   const currMonth = new Date().toISOString().slice(0,7);
-  ['txDate','recNext','subNext','debtStart','assetDate'].forEach(id => {
+  ['txDate','recNext','subNext','debtStart','assetDate','invIssueDate','invDueDate'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = el.type === 'month' ? currMonth : today;
   });
@@ -1898,16 +2118,16 @@ function fmt(amount, currency) {
 }
 
 // ======= NAVIGATION =======
-const TITLES = { overview:'Overview', accounts:'Accounts', transactions:'Transactions', recurring:'Recurring Payments', subscriptions:'Subscriptions', debts:'Debt Engine', piggy:'Piggy Banks', portfolio:'Portfolio', analytics:'Analytics', settings:'Settings' };
+const TITLES = { overview:'Overview', accounts:'Accounts', transactions:'Transactions', recurring:'Recurring Payments', subscriptions:'Subscriptions', debts:'Debt Engine', piggy:'Piggy Banks', portfolio:'Portfolio', analytics:'Analytics', health:'Financial Health Report', invoices:'Invoices', settings:'Settings' };
 
 function navigate(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('view-' + view)?.classList.add('active');
+  const viewEl = document.getElementById('view-' + view);
+  if (viewEl) { viewEl.style.display = ''; viewEl.classList.add('active'); }
   document.querySelector(`[data-view="${view}"]`)?.classList.add('active');
   document.getElementById('topbarTitle').textContent = TITLES[view] || view;
 
-  // Load data per view
   if (view === 'overview') loadOverview();
   else if (view === 'accounts') renderAccounts();
   else if (view === 'transactions') loadTransactions();
@@ -1917,6 +2137,8 @@ function navigate(view) {
   else if (view === 'piggy') loadPiggy();
   else if (view === 'portfolio') loadPortfolio();
   else if (view === 'analytics') renderAnalytics();
+  else if (view === 'health') loadHealthReport();
+  else if (view === 'invoices') loadInvoices();
 }
 
 function toggleSidebar() {
@@ -1982,6 +2204,13 @@ async function signOut() {
 async function loadAccounts() {
   const { data, error } = await sb.from('accounts').select('*').eq('user_id', USER.id).eq('is_active', true).order('created_at');
   ACCOUNTS = data || [];
+
+  // Show business mode toggle only if user has at least one business account
+  const hasBizAccount = ACCOUNTS.some(a => a.type === 'business');
+  const modePill = document.getElementById('modePill');
+  if (modePill) modePill.style.display = hasBizAccount ? '' : 'none';
+  // If no business account, force personal mode
+  if (!hasBizAccount && BIZ_MODE) { BIZ_MODE = false; localStorage.setItem('cb-mode','personal'); document.body.classList.remove('biz-mode'); }
 
   // Populate account selects
   const selects = ['txAccount','recAccount','subAccount','txFilterAccount'];
@@ -3049,10 +3278,359 @@ async function saveProfile() {
 async function confirmDeleteAccount() {
   if (!confirm('This will permanently delete ALL your data. Are you absolutely sure?')) return;
   if (!confirm('Final confirmation: delete everything?')) return;
-  const tables = ['transactions','accounts','recurring_payments','subscriptions','debts','debt_payments','piggy_banks','assets','portfolio_history','profiles'];
+  const tables = ['transactions','accounts','recurring_payments','subscriptions','debts','debt_payments','piggy_banks','assets','portfolio_history','profiles','invoices'];
   for (const t of tables) { try { await sb.from(t).delete().eq('user_id', USER.id); } catch {} }
   await sb.auth.signOut();
   window.location.href = '/';
+}
+
+// ======= FINANCIAL HEALTH REPORT =======
+async function loadHealthReport() {
+  const now = new Date();
+  const thirtyAgo = new Date(now - 30*24*60*60*1000).toISOString().split('T')[0];
+  const ninetyAgo = new Date(now - 90*24*60*60*1000).toISOString().split('T')[0];
+
+  const [
+    { data: txData30 },
+    { data: txData90 },
+    { data: debtsData },
+    { data: assetsData },
+    { data: piggiesData },
+    { data: subsData },
+    { data: recsData },
+  ] = await Promise.all([
+    sb.from('transactions').select('type,amount,category').eq('user_id', USER.id).gte('date', thirtyAgo),
+    sb.from('transactions').select('type,amount,category').eq('user_id', USER.id).gte('date', ninetyAgo),
+    sb.from('debts').select('*').eq('user_id', USER.id).eq('is_active', true),
+    sb.from('assets').select('*').eq('user_id', USER.id),
+    sb.from('piggy_banks').select('*').eq('user_id', USER.id),
+    sb.from('subscriptions').select('*').eq('user_id', USER.id).eq('is_active', true),
+    sb.from('recurring_payments').select('*').eq('user_id', USER.id).eq('is_active', true),
+  ]);
+
+  const tx30 = txData30 || [], tx90 = txData90 || [];
+  const income30 = tx30.filter(t=>t.type==='income').reduce((s,t)=>s+parseFloat(t.amount),0);
+  const expenses30 = tx30.filter(t=>t.type==='expense').reduce((s,t)=>s+parseFloat(t.amount),0);
+  const income90 = tx90.filter(t=>t.type==='income').reduce((s,t)=>s+parseFloat(t.amount),0) / 3; // monthly avg
+  const expenses90 = tx90.filter(t=>t.type==='expense').reduce((s,t)=>s+parseFloat(t.amount),0) / 3;
+
+  const totalBalance = ACCOUNTS.reduce((s,a)=>s+parseFloat(a.balance||0),0);
+  const liquidBalance = ACCOUNTS.filter(a=>a.type!=='business').reduce((s,a)=>s+parseFloat(a.balance||0),0);
+  const portValue = (assetsData||[]).reduce((s,a)=>s+(parseFloat(a.manual_value||0)||parseFloat(a.quantity||0)*parseFloat(a.purchase_price||0)),0);
+  const totalDebt = (debtsData||[]).reduce((s,d)=>s+parseFloat(d.remaining_balance||0),0);
+  const monthlyDebtPayments = (debtsData||[]).reduce((s,d)=>s+parseFloat(d.monthly_payment||0),0);
+  const netWorth = totalBalance + portValue - totalDebt;
+  const subMonthly = (subsData||[]).reduce((s,s2)=>s+(s2.billing_cycle==='yearly'?parseFloat(s2.amount)/12:parseFloat(s2.amount)),0);
+  const recIncome = (recsData||[]).filter(r=>r.type==='income').reduce((s,r)=>s+parseFloat(r.amount||0),0);
+
+  // ——— METRIC CALCULATIONS ———
+  const avgIncome = income90 || income30 || 1;
+  const avgExpenses = expenses90 || expenses30 || 0;
+
+  // 1. Savings Rate
+  const savingsRate = avgIncome > 0 ? ((avgIncome - avgExpenses) / avgIncome * 100) : 0;
+  const savingsStatus = savingsRate >= 20 ? 'good' : savingsRate >= 5 ? 'warn' : 'bad';
+
+  // 2. Emergency Fund (months of expenses covered by liquid balance)
+  const emergencyMonths = avgExpenses > 0 ? liquidBalance / avgExpenses : 0;
+  const emergencyStatus = emergencyMonths >= 6 ? 'good' : emergencyMonths >= 3 ? 'warn' : 'bad';
+
+  // 3. Debt-to-Income Ratio (monthly debt payments vs monthly income)
+  const dtiRatio = avgIncome > 0 ? (monthlyDebtPayments / avgIncome * 100) : (totalDebt > 0 ? 100 : 0);
+  const dtiStatus = dtiRatio <= 20 ? 'good' : dtiRatio <= 36 ? 'warn' : 'bad';
+
+  // 4. Debt-to-Net-Worth ratio
+  const dtnwRatio = netWorth > 0 ? (totalDebt / netWorth * 100) : (totalDebt > 0 ? 200 : 0);
+  const dtnwStatus = dtnwRatio <= 30 ? 'good' : dtnwRatio <= 80 ? 'warn' : 'bad';
+
+  // 5. Financial Runway (months expenses covered by all liquid assets + portfolio)
+  const totalLiquid = totalBalance + portValue;
+  const runway = avgExpenses > 0 ? totalLiquid / avgExpenses : 999;
+  const runwayStatus = runway >= 12 ? 'good' : runway >= 3 ? 'warn' : 'bad';
+
+  // 6. Investment Rate (portfolio as % of net worth)
+  const investRate = netWorth > 0 ? (portValue / netWorth * 100) : 0;
+  const investStatus = investRate >= 30 ? 'good' : investRate >= 10 ? 'warn' : 'bad';
+
+  // 7. Subscription Burden (monthly subs as % of income)
+  const subBurden = avgIncome > 0 ? (subMonthly / avgIncome * 100) : 0;
+  const subStatus = subBurden <= 5 ? 'good' : subBurden <= 15 ? 'warn' : 'bad';
+
+  // 8. Income Diversification (unique income categories in last 90d)
+  const incomeCategories = new Set(tx90.filter(t=>t.type==='income').map(t=>t.category)).size;
+  const diversifyStatus = incomeCategories >= 3 ? 'good' : incomeCategories >= 2 ? 'warn' : 'bad';
+
+  // 9. Savings goal coverage (how much of target saved on average across goals)
+  const goalCoverage = piggiesData && piggiesData.length > 0
+    ? piggiesData.reduce((s,p)=>s+(parseFloat(p.current_amount)/parseFloat(p.target_amount)*100),0)/piggiesData.length
+    : 0;
+  const goalStatus = goalCoverage >= 50 ? 'good' : goalCoverage >= 15 ? 'warn' : 'bad';
+
+  // 10. Expense volatility (how consistent spending is: compare 30d vs 90d avg)
+  const volatility = avgExpenses > 0 ? Math.abs(expenses30 - avgExpenses) / avgExpenses * 100 : 0;
+  const volatilityStatus = volatility <= 15 ? 'good' : volatility <= 35 ? 'warn' : 'bad';
+
+  // ——— OVERALL SCORE ———
+  const scoreMap = { good: 10, warn: 5, bad: 0 };
+  const metrics = [savingsStatus,emergencyStatus,dtiStatus,dtnwStatus,runwayStatus,investStatus,subStatus,diversifyStatus,goalStatus,volatilityStatus];
+  const raw = metrics.reduce((s,m)=>s+scoreMap[m],0); // 0-100
+  const score = raw;
+  const grade = score >= 90 ? 'A+' : score >= 80 ? 'A' : score >= 70 ? 'B+' : score >= 60 ? 'B' : score >= 50 ? 'C' : score >= 35 ? 'D' : 'F';
+  const gradeColor = score >= 70 ? 'var(--green)' : score >= 50 ? 'var(--yellow)' : 'var(--red)';
+
+  // Update mini widget too
+  document.getElementById('healthScore').textContent = score;
+  const labelTxt = score>=80?'Excellent 🌟':score>=60?'Good 👍':score>=40?'Fair ⚠️':'Needs Work 🔴';
+  document.getElementById('healthLabel').textContent = labelTxt;
+  const circ = 238.76;
+  document.getElementById('healthRingFill').style.strokeDashoffset = circ-(circ*score/100);
+
+  // Update full panel
+  document.getElementById('healthOverallScore').textContent = score + '/100';
+  document.getElementById('healthScoreBar').style.width = score + '%';
+  document.getElementById('healthScoreBar').style.background = `linear-gradient(90deg,${gradeColor},${gradeColor}aa)`;
+  document.getElementById('healthGradeLetter').textContent = grade;
+  document.getElementById('healthGradeLetter').style.color = gradeColor;
+  document.getElementById('healthGradeCircle').style.borderColor = gradeColor;
+  document.getElementById('healthSummaryText').textContent = buildHealthSummary(score, savingsRate, emergencyMonths, totalDebt, runwayStatus);
+
+  // Build metric cards
+  const metricDefs = [
+    { label:'Savings Rate', icon:'💰', value: savingsRate.toFixed(1)+'%', target:'Target: ≥20% of income', status: savingsStatus,
+      barPct: Math.min(100, savingsRate/20*100), barColor: savingsStatus==='good'?'var(--green)':savingsStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: savingsRate >= 20 ? 'Great — you\'re saving a healthy chunk of your income each month.' : savingsRate >= 5 ? `You\'re saving ${savingsRate.toFixed(1)}% of income. Aim to reach 20% by reducing discretionary spend.` : `Deficit or very low savings. Your expenses are outpacing your income — this is your #1 priority.`},
+    { label:'Emergency Fund', icon:'🛡️', value: emergencyMonths < 999 ? emergencyMonths.toFixed(1)+' mo' : '∞', target:'Target: 3–6 months expenses', status: emergencyStatus,
+      barPct: Math.min(100, emergencyMonths/6*100), barColor: emergencyStatus==='good'?'var(--green)':emergencyStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: emergencyStatus==='good' ? 'Your liquid savings can cover more than 6 months of expenses. Excellent cushion.' : emergencyStatus==='warn' ? `You have ${emergencyMonths.toFixed(1)} months of cover. Build to 6 months before investing aggressively.` : `Critical: less than 3 months of expenses in liquid form. Build this fund before anything else.`},
+    { label:'Debt-to-Income', icon:'⚖️', value: dtiRatio.toFixed(1)+'%', target:'Target: <20% (safe) / <36%', status: dtiStatus,
+      barPct: Math.min(100, dtiRatio/36*100), barColor: dtiStatus==='good'?'var(--green)':dtiStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: dtiStatus==='good' ? 'Healthy — your monthly debt payments are well within safe limits.' : dtiStatus==='warn' ? `${dtiRatio.toFixed(1)}% of income goes to debt. Lenders consider 36%+ as risky. Focus on paydown.` : `Danger zone: more than 36% of income is consumed by debt service. Aggressive paydown recommended.`},
+    { label:'Debt-to-Net-Worth', icon:'📊', value: dtnwRatio.toFixed(1)+'%', target:'Target: <30%', status: dtnwStatus,
+      barPct: Math.min(100, dtnwRatio/80*100), barColor: dtnwStatus==='good'?'var(--green)':dtnwStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: dtnwStatus==='good' ? 'Your total debt is small relative to your net worth — low financial risk.' : `Debt represents ${dtnwRatio.toFixed(1)}% of your net worth. Work to reduce this ratio below 30%.`},
+    { label:'Financial Runway', icon:'✈️', value: runway >= 999 ? '∞' : runway.toFixed(1)+' mo', target:'Target: ≥12 months', status: runwayStatus,
+      barPct: Math.min(100, runway/12*100), barColor: runwayStatus==='good'?'var(--green)':runwayStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: runwayStatus==='good' ? 'Excellent — your assets could sustain your lifestyle for over a year without income.' : runwayStatus==='warn' ? `${runway.toFixed(1)} months of runway. Aim for 12+ months to reduce income-shock risk.` : `Very short runway. Prioritise building cash reserves immediately.`},
+    { label:'Investment Rate', icon:'📈', value: investRate.toFixed(1)+'%', target:'Target: ≥30% of net worth', status: investStatus,
+      barPct: Math.min(100, investRate/30*100), barColor: investStatus==='good'?'var(--green)':investStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: investStatus==='good' ? 'Strong — a significant portion of your net worth is working for you in investments.' : investRate > 0 ? `${investRate.toFixed(1)}% of your wealth is invested. Grow this toward 30%+ for long-term wealth building.` : 'No investments tracked. Even small regular investments compound significantly over time.'},
+    { label:'Subscription Burden', icon:'📦', value: subBurden.toFixed(1)+'%', target:'Target: <5% of income', status: subStatus,
+      barPct: Math.min(100, subBurden/15*100), barColor: subStatus==='good'?'var(--green)':subStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: subStatus==='good' ? `${fmt(subMonthly)}/mo in subscriptions — well controlled.` : subStatus==='warn' ? `${fmt(subMonthly)}/mo (${subBurden.toFixed(1)}% of income). Review each subscription for value.` : `Subscription cost is high at ${fmt(subMonthly)}/mo. Cancel unused services.`},
+    { label:'Income Diversification', icon:'🌐', value: incomeCategories + ' source'+(incomeCategories===1?'':'s'), target:'Target: 3+ income sources', status: diversifyStatus,
+      barPct: Math.min(100, incomeCategories/3*100), barColor: diversifyStatus==='good'?'var(--green)':diversifyStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: diversifyStatus==='good' ? 'Well diversified — multiple income streams reduce your financial risk.' : incomeCategories === 1 ? 'Single income source is high risk. Consider freelancing, investments, or passive income.' : `${incomeCategories} income categories detected. Adding one more stream significantly reduces risk.`},
+    { label:'Savings Goals Progress', icon:'🎯', value: goalCoverage.toFixed(0)+'%', target:'Target: ≥50% funded', status: goalStatus,
+      barPct: goalCoverage, barColor: goalStatus==='good'?'var(--green)':goalStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: piggiesData && piggiesData.length > 0 ? (goalStatus==='good' ? 'More than half of your savings goals are well funded.' : `Average goal funding is ${goalCoverage.toFixed(0)}%. Keep contributing to reach your targets.`) : 'No savings goals set. Define goals to give your saving a purpose and direction.'},
+    { label:'Spending Consistency', icon:'📅', value: volatility.toFixed(0)+'% variance', target:'Target: <15% month variance', status: volatilityStatus,
+      barPct: Math.min(100, 100-volatility), barColor: volatilityStatus==='good'?'var(--green)':volatilityStatus==='warn'?'var(--yellow)':'var(--red)',
+      desc: volatilityStatus==='good' ? 'Spending is consistent and predictable — this makes budgeting much easier.' : volatilityStatus==='warn' ? `${volatility.toFixed(0)}% variance vs 3-month average. Some months are significantly higher than others.` : 'Highly irregular spending. Identify one-off large expenses and budget for them next time.'},
+  ];
+
+  document.getElementById('healthMetricsGrid').innerHTML = metricDefs.map(m => `
+    <div class="health-metric">
+      <span class="hm-icon">${m.icon}</span>
+      <div class="hm-header">
+        <span class="hm-label">${m.label}</span>
+        <span class="hm-status hm-${m.status}">${m.status==='good'?'✓ Good':m.status==='warn'?'⚠ Watch':'✗ Risk'}</span>
+      </div>
+      <div class="hm-value" style="color:${m.barColor}">${m.value}</div>
+      <div class="hm-target">${m.target}</div>
+      <div class="hm-bar"><div class="hm-bar-fill" style="width:${Math.max(2,m.barPct)}%;background:${m.barColor}"></div></div>
+      <div class="hm-desc">${m.desc}</div>
+    </div>`).join('');
+
+  // Risk flags (all 'bad' items)
+  const risks = metricDefs.filter(m=>m.status==='bad');
+  const warns = metricDefs.filter(m=>m.status==='warn');
+  const riskEl = document.getElementById('healthRisks');
+  if (!risks.length && !warns.length) {
+    riskEl.innerHTML = '<div class="empty-state" style="padding:20px"><div class="empty-icon">🟢</div><div class="empty-title">No risk flags</div><div class="empty-desc">All metrics are in healthy ranges</div></div>';
+  } else {
+    riskEl.innerHTML = [
+      ...risks.map(m => `<div class="risk-item"><div class="risk-dot risk-dot-red"></div><div><div class="risk-title">${m.icon} ${m.label}</div><div class="risk-desc">${m.desc}</div></div></div>`),
+      ...warns.map(m => `<div class="risk-item"><div class="risk-dot risk-dot-yellow"></div><div><div class="risk-title">${m.icon} ${m.label}</div><div class="risk-desc">${m.desc}</div></div></div>`),
+    ].join('');
+  }
+
+  // Priority actions (ranked by impact)
+  const actions = buildPriorityActions(savingsRate, emergencyMonths, dtiRatio, subMonthly, investRate, incomeCategories, totalDebt, avgExpenses, avgIncome);
+  const actEl = document.getElementById('healthActions');
+  actEl.innerHTML = actions.length ? actions.map((a,i) => `
+    <div class="action-item">
+      <div class="action-num">${i+1}</div>
+      <div><div class="action-title">${a.title}</div><div class="action-impact">${a.impact}</div></div>
+    </div>`).join('') : '<div class="empty-state" style="padding:20px"><div class="empty-icon">🌟</div><div class="empty-desc">Nothing urgent — keep up the great work</div></div>';
+
+  // Strengths
+  const strengths = metricDefs.filter(m=>m.status==='good').map(m=>`<span class="strength-badge">${m.icon} ${m.label}</span>`);
+  document.getElementById('healthStrengths').innerHTML = strengths.length ? strengths.join('') : '<span style="color:var(--text3);font-size:.82rem">Keep working on your metrics to unlock strengths!</span>';
+}
+
+function buildHealthSummary(score, savingsRate, emergencyMonths, totalDebt, runwayStatus) {
+  if (score >= 80) return `Outstanding financial health. You\'re saving well, debt is manageable, and you have a strong safety net. Focus on growing investments.`;
+  if (score >= 60) return `Good foundation. A few areas need attention — see the metrics below for targeted improvements.`;
+  if (score >= 40) return `Mixed picture. There are some real risk areas that need action soon. Prioritise emergency fund and savings rate.`;
+  return `Financial health needs urgent attention. Multiple risk flags detected. Focus on the Priority Actions below.`;
+}
+
+function buildPriorityActions(savingsRate, emergencyMonths, dtiRatio, subMonthly, investRate, incomeCategories, totalDebt, avgExpenses, avgIncome) {
+  const actions = [];
+  if (emergencyMonths < 3) actions.push({ title: `Build emergency fund to ${fmt(avgExpenses*3)} (3 months)`, impact: `This is your most important financial safety net. Aim to add ${fmt(Math.max(0,(avgExpenses*3)-emergencyMonths*avgExpenses))} to reach 3 months coverage.` });
+  if (savingsRate < 0) actions.push({ title: 'Cut expenses to stop the deficit', impact: `You\'re spending ${fmt(Math.abs(avgIncome-avgExpenses))} more than you earn each month. Review your top expense categories.` });
+  else if (savingsRate < 10) actions.push({ title: `Increase savings rate from ${savingsRate.toFixed(1)}% to 20%`, impact: `This means saving an extra ${fmt(avgIncome*0.2-Math.max(0,avgIncome-avgExpenses))}/month. Small lifestyle changes add up quickly.` });
+  if (dtiRatio > 36) actions.push({ title: 'Aggressively pay down high-interest debt', impact: `Your debt service consumes ${dtiRatio.toFixed(0)}% of income. Use the debt snowball method — smallest balance first for motivation.` });
+  if (subMonthly > avgIncome * 0.1) actions.push({ title: `Audit subscriptions (${fmt(subMonthly)}/mo)`, impact: 'Go through each one. Cancel anything unused for 30+ days. Even saving 20% of this frees up real money.' });
+  if (investRate < 10 && emergencyMonths >= 3 && savingsRate > 5) actions.push({ title: 'Start investing consistently', impact: `Even ${fmt(avgIncome*0.05)}/month invested consistently over 10 years can build significant wealth through compounding.` });
+  if (incomeCategories < 2) actions.push({ title: 'Develop a second income stream', impact: 'Freelancing, dividends, or passive income reduces dependence on a single source and accelerates wealth building.' });
+  if (emergencyMonths >= 3 && emergencyMonths < 6) actions.push({ title: `Extend emergency fund to 6 months (${fmt(avgExpenses*6)})`, impact: `You need ${fmt(Math.max(0,(avgExpenses*6)-emergencyMonths*avgExpenses))} more. This protects against job loss, medical emergencies, and major repairs.` });
+  return actions.slice(0, 5);
+}
+
+// ======= INVOICES =======
+let invoiceLineItems = [];
+
+async function loadInvoices() {
+  const { data } = await sb.from('invoices').select('*').eq('user_id', USER.id).order('created_at', {ascending:false});
+  const invs = data || [];
+
+  const total = invs.reduce((s,i)=>s+parseFloat(i.total||0), 0);
+  const outstanding = invs.filter(i=>['sent'].includes(i.status)).reduce((s,i)=>s+parseFloat(i.total||0),0);
+  const overdue = invs.filter(i=>i.status==='overdue').reduce((s,i)=>s+parseFloat(i.total||0),0);
+
+  document.getElementById('inv-total').textContent = fmt(total);
+  document.getElementById('inv-outstanding').textContent = fmt(outstanding);
+  document.getElementById('inv-overdue').textContent = fmt(overdue);
+  document.getElementById('inv-overdue').style.color = overdue > 0 ? 'var(--red)' : '';
+
+  const tbody = document.getElementById('invoicesBody');
+  if (!invs.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🧾</div><div class="empty-title">No invoices yet</div><div class="empty-desc">Create your first invoice to start tracking client payments</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = invs.map(i => {
+    const dueDate = i.due_date ? new Date(i.due_date) : null;
+    const today = new Date();
+    const daysUntilDue = dueDate ? Math.ceil((dueDate - today) / 86400000) : null;
+    const dueTxt = dueDate ? (daysUntilDue < 0 ? `<span style="color:var(--red)">${Math.abs(daysUntilDue)}d overdue</span>` : daysUntilDue === 0 ? `<span style="color:var(--yellow)">Due today</span>` : i.due_date) : '—';
+    return `
+      <tr>
+        <td style="font-weight:700">${i.invoice_number}</td>
+        <td style="font-weight:500">${i.client_name}</td>
+        <td style="color:var(--text3);font-size:.8rem">${i.issue_date}</td>
+        <td style="font-size:.8rem">${dueTxt}</td>
+        <td style="font-weight:800">${fmt(i.total, i.currency)}</td>
+        <td><span class="badge inv-${i.status}">${i.status.charAt(0).toUpperCase()+i.status.slice(1)}</span></td>
+        <td class="actions">
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="editInvoice('${i.id}')" title="Edit">✎</button>
+          <button class="btn btn-ghost btn-sm" onclick="markInvoicePaid('${i.id}')" style="color:var(--green);font-size:.72rem">✓ Paid</button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteInvoice('${i.id}')">✕</button>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function addLineItem() {
+  invoiceLineItems.push({ desc: '', qty: 1, price: 0 });
+  renderLineItems();
+}
+
+function renderLineItems() {
+  const container = document.getElementById('lineItemsList');
+  container.innerHTML = invoiceLineItems.map((item, i) => `
+    <div class="line-item-row">
+      <input class="form-input" placeholder="Description" value="${item.desc}" oninput="invoiceLineItems[${i}].desc=this.value" style="font-size:.82rem;padding:8px 10px">
+      <input class="form-input" type="number" placeholder="Qty" value="${item.qty}" min="1" step="any" oninput="invoiceLineItems[${i}].qty=parseFloat(this.value)||0;recalcInvoice()" style="font-size:.82rem;padding:8px 10px">
+      <input class="form-input" type="number" placeholder="Price" value="${item.price}" step="0.01" oninput="invoiceLineItems[${i}].price=parseFloat(this.value)||0;recalcInvoice()" style="font-size:.82rem;padding:8px 10px">
+      <button class="btn btn-danger btn-sm btn-icon" onclick="removeLineItem(${i})">✕</button>
+    </div>`).join('');
+  recalcInvoice();
+}
+
+function removeLineItem(i) {
+  invoiceLineItems.splice(i, 1);
+  renderLineItems();
+}
+
+function recalcInvoice() {
+  const subtotal = invoiceLineItems.reduce((s,item)=>s+(item.qty||0)*(item.price||0),0);
+  const taxRate = parseFloat(document.getElementById('invTaxRate')?.value||0);
+  const taxAmt = subtotal * taxRate / 100;
+  const total = subtotal + taxAmt;
+  const cur = document.getElementById('invCurrency')?.value || 'USD';
+  document.getElementById('invSubtotalDisplay').textContent = fmt(subtotal, cur);
+  document.getElementById('invTotalDisplay').textContent = fmt(total, cur);
+}
+
+async function saveInvoice() {
+  const id = document.getElementById('invoiceId').value;
+  const subtotal = invoiceLineItems.reduce((s,item)=>s+(item.qty||0)*(item.price||0),0);
+  const taxRate = parseFloat(document.getElementById('invTaxRate').value||0);
+  const taxAmt = subtotal * taxRate / 100;
+  const total = subtotal + taxAmt;
+
+  const data = {
+    user_id: USER.id,
+    invoice_number: document.getElementById('invNumber').value.trim(),
+    client_name: document.getElementById('invClient').value.trim(),
+    client_email: document.getElementById('invEmail').value.trim() || null,
+    client_address: document.getElementById('invAddress').value.trim() || null,
+    issue_date: document.getElementById('invIssueDate').value,
+    due_date: document.getElementById('invDueDate').value || null,
+    status: document.getElementById('invStatus').value,
+    currency: document.getElementById('invCurrency').value,
+    subtotal, tax_rate: taxRate, tax_amount: taxAmt, total,
+    notes: document.getElementById('invNotes').value.trim() || null,
+    line_items: invoiceLineItems,
+  };
+
+  if (!data.invoice_number || !data.client_name || !data.issue_date) { toast('Fill invoice #, client name and date', 'error'); return; }
+
+  const { error } = id
+    ? await sb.from('invoices').update(data).eq('id', id)
+    : await sb.from('invoices').insert(data);
+
+  if (error) { toast(error.message, 'error'); return; }
+  toast('Invoice saved!', 'success');
+  closeModal('invoiceModal');
+  document.getElementById('invoiceId').value = '';
+  invoiceLineItems = [];
+  renderLineItems();
+  loadInvoices();
+}
+
+async function editInvoice(id) {
+  const { data: inv } = await sb.from('invoices').select('*').eq('id', id).single();
+  if (!inv) return;
+  document.getElementById('invoiceModalTitle').textContent = 'Edit Invoice';
+  document.getElementById('invoiceId').value = inv.id;
+  document.getElementById('invNumber').value = inv.invoice_number;
+  document.getElementById('invClient').value = inv.client_name;
+  document.getElementById('invEmail').value = inv.client_email || '';
+  document.getElementById('invAddress').value = inv.client_address || '';
+  document.getElementById('invIssueDate').value = inv.issue_date;
+  document.getElementById('invDueDate').value = inv.due_date || '';
+  document.getElementById('invStatus').value = inv.status;
+  document.getElementById('invCurrency').value = inv.currency;
+  document.getElementById('invTaxRate').value = inv.tax_rate || 0;
+  document.getElementById('invNotes').value = inv.notes || '';
+  invoiceLineItems = Array.isArray(inv.line_items) ? inv.line_items : [];
+  renderLineItems();
+  openModal('invoiceModal');
+}
+
+async function markInvoicePaid(id) {
+  await sb.from('invoices').update({ status: 'paid' }).eq('id', id);
+  toast('Invoice marked as paid! 💚', 'success');
+  loadInvoices();
+}
+
+async function deleteInvoice(id) {
+  if (!confirm('Delete this invoice?')) return;
+  await sb.from('invoices').delete().eq('id', id);
+  toast('Invoice deleted', 'info');
+  loadInvoices();
 }
 </script>
 </body>
