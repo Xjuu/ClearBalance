@@ -505,12 +505,12 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 // Check session on load
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (session) window.location.href = '/dashboard.html';
+  if (session) window.location.href = 'https://dashboard.clearbalance.xyz';
 })();
 
 // Auth state
 sb.auth.onAuthStateChange((event, session) => {
-  if (session) window.location.href = '/dashboard.html';
+  if (session) window.location.href = 'https://dashboard.clearbalance.xyz';
 });
 
 // I18N
@@ -598,7 +598,7 @@ function toggleAuthCards() {
 async function oauthLogin(provider) {
   const { error } = await sb.auth.signInWithOAuth({
     provider,
-    options: { redirectTo: `${window.location.origin}/dashboard.html` }
+    options: { redirectTo: 'https://dashboard.clearbalance.xyz' }
   });
   if (error) console.error(error);
 }
@@ -622,7 +622,7 @@ async function emailSignUp() {
   const msg = document.getElementById('suMsg');
   msg.textContent = 'Creating account...';
   msg.className = 'auth-msg';
-  const { error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/dashboard.html` } });
+  const { error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: 'https://dashboard.clearbalance.xyz' } });
   if (error) { msg.textContent = error.message; msg.className = 'auth-msg error'; }
   else { msg.textContent = 'Check your email to confirm your account!'; msg.className = 'auth-msg success'; }
 }
