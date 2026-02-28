@@ -504,12 +504,14 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Check session on load
 (async () => {
+  if (window.location.hostname === 'dashboard.clearbalance.xyz') return;
   const { data: { session } } = await sb.auth.getSession();
   if (session) window.location.href = 'https://dashboard.clearbalance.xyz';
 })();
 
 // Auth state
 sb.auth.onAuthStateChange((event, session) => {
+  if (window.location.hostname === 'dashboard.clearbalance.xyz') return;
   if (session) window.location.href = 'https://dashboard.clearbalance.xyz';
 });
 
