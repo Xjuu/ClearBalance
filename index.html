@@ -6,8 +6,8 @@
 <script>
   // If served on the dashboard subdomain, hard-redirect to the dashboard file.
   // Must preserve hash (contains Supabase OAuth token) and search params.
-  if (window.location.hostname === 'dashboard.clearbalance.xyz') {
-    const dest = '/dashboard/index.html' + window.location.search + window.location.hash;
+  if (window.location.hostname === 'clearbalance.xyz') {
+    const dest = '/dashboard' + window.location.search + window.location.hash;
     window.location.replace(dest);
     throw new Error('→ dashboard');
   }
