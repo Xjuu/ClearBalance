@@ -513,15 +513,15 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Check session on load
 (async () => {
-  if (window.location.hostname === 'dashboard.clearbalance.xyz') return;
+  if (window.location.hostname === 'clearbalance.xyz') return;
   const { data: { session } } = await sb.auth.getSession();
-  if (session) window.location.href = 'https://dashboard.clearbalance.xyz';
+  if (session) window.location.href = 'https://clearbalance.xyz/dashboard';
 })();
 
 // Auth state
 sb.auth.onAuthStateChange((event, session) => {
-  if (window.location.hostname === 'dashboard.clearbalance.xyz') return;
-  if (session) window.location.href = 'https://dashboard.clearbalance.xyz';
+  if (window.location.hostname === 'clearbalance.xyz') return;
+  if (session) window.location.href = 'https://clearbalance.xyz/dashboard';
 });
 
 // I18N
@@ -609,7 +609,7 @@ function toggleAuthCards() {
 async function oauthLogin(provider) {
   const { error } = await sb.auth.signInWithOAuth({
     provider,
-    options: { redirectTo: 'https://dashboard.clearbalance.xyz' }
+    options: { redirectTo: 'https://clearbalance.xyz/dashboard' }
   });
   if (error) console.error(error);
 }
@@ -633,7 +633,7 @@ async function emailSignUp() {
   const msg = document.getElementById('suMsg');
   msg.textContent = 'Creating account...';
   msg.className = 'auth-msg';
-  const { error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: 'https://dashboard.clearbalance.xyz' } });
+  const { error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: 'https://clearbalance.xyz/dashboard' } });
   if (error) { msg.textContent = error.message; msg.className = 'auth-msg error'; }
   else { msg.textContent = 'Check your email to confirm your account!'; msg.className = 'auth-msg success'; }
 }
